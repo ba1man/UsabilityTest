@@ -1,26 +1,45 @@
-# project analysis bat deal
+# Automated Usability Test
 
-## requirements
+## Before start
 
-- windows
+You need:
 
-- python package: git
-    - pip install GitPython
+- A computer with `Windows 10` as operating system
 
-- understand environment
-    - Apply for a student account: https://www.scitools.com/student/
+- `SciTools Understand` installed
+  > Apply for a free student license on the [website](https://www.scitools.com/student/) if you don't have a one.
 
-- Memory greater than 10G
+- `Sourcetrail` installed
+  > Follow the guidance on [tools/#_INSTALL_THIS_sourcetrail/README.doc](./tools/%23_INSTALL_THIS_sourcetrail/README.doc) to install and operate.
 
-- Allow git to use long file name (in Windows):
+- Allow git to use long file name:
+
+  ```sh
+  $ git config --system core.longpaths true
+  ```
+
+## Run test, with only one command
 
 ```sh
-git config --system core.longpaths true
+$ python do.py <lang> <range>
 ```
 
-## Usage
+where,
 
-``` cmd
-python .\bat_project_<lang>.py [start_line] [end_line]
-```
+* `lang` can be one of
+  * `java`
+  * `cpp`
+  * `python`
 
+* `range` can be one of
+  * a number `n`, refers to n-th project in the list
+  * a range `a-b`, refers to projects from  a-th to b-th
+
+Boom, you are free to afk.
+
+## Submit results
+
+We want newly generated files under these directories:
+
+* `logs/`
+* `time-records/`
