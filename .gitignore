@@ -1,0 +1,12 @@
+.vscode
+logs/*
+out/depends/*
+out/ENRE-cpp/*
+out/ENRE-java/*
+out/ENRE-python/*
+out/sourcetrail/*
+out/understand/*
+repo/*
+time-records/*
+
+!**/KEEP THIS DIR
