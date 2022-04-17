@@ -24,7 +24,7 @@ You need:
 ## Run test, with only one command
 
 ```sh
-$ python do.py <lang> <range>
+$ python do.py <lang> <range> [only]
 ```
 
 where,
@@ -38,7 +38,15 @@ where,
   * a number `n`, refers to n-th project in the list
   * a range `a-b`, refers to projects from  a-th to b-th
 
-Boom, you are free to afk.
+> * Usually you don't need to set this, `only` can be one of
+>   * `enre`: Runs `ENRE-<lang>` only
+>   * `depends`: Runs `Depends` only
+>   * `understand`: Runs `Understand` only
+>   * `clone`: Just clone the repositories
+
+We highly encourage you to run this script under `Windows Terminal` + `PowerShell`, this conbination suits the modern world on Windows platform.
+
+Press ENTER, Booooooom, you are free to afk.
 
 ## Submit results
 
