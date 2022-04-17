@@ -175,7 +175,7 @@ if __name__ == '__main__':
             logging.info(f'LoC for {project_name} is {LoC}')
         except subprocess.CalledProcessError:
             logging.exception(
-                f'Failed couting linc of code for project \'{project_name}\'')
+                f'Failed couting line of code for project \'{project_name}\'')
         records['LoC'] = LoC
 
         # Run ENRE
