@@ -123,7 +123,8 @@ if __name__ == '__main__':
 
             jump = False
             while not path.exists(expected):
-                cmd = f'git clone {project_clone_url_list[project_name]} {expected}'
+                # Depth 1 for only current revison
+                cmd = f'git clone --depth 1 {project_clone_url_list[project_name]} {expected}'
                 proc = subprocess.Popen(
                     cmd, shell=True, stdout=subprocess.PIPE)
                 while proc.poll() is None:
