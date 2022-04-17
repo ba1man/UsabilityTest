@@ -6,13 +6,13 @@ You need:
 
 - A computer with `Windows 10` as operating system
 
-- `Java` latest installed (>= 15) and can be accessed via environment path
+- `Java` latest installed (>= 15) and can be accessed via the environment path
   > Some tools depends on JRE to run.
 
-- `SciTools Understand` installed and can be accessed via environment path
+- `SciTools Understand` installed and can be accessed via the environment path
   > Apply for a free student license on the [website](https://www.scitools.com/student/) if you don't have a one.
 
-- `Sourcetrail` installed
+- `Sourcetrail` installed and can be accessed via the environment path
   > Follow the guidance on [tools/#_INSTALL_THIS_sourcetrail/README.doc](./tools/%23_INSTALL_THIS_sourcetrail/README.doc) to install and operate.
 
 - Allow git to use long file name:
