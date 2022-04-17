@@ -154,25 +154,28 @@ if __name__ == '__main__':
         print('Counting line of code')
         LoC = 0
         cmd = f'.\\utils\\cloc-1.92.exe ./repo/{project_name} --csv --quiet'
-        proc = subprocess.check_output(cmd, shell=True)
-        outs = proc.strip().decode('utf-8').splitlines()
-        for out in outs:
-            out = out.split(',')
-            if len(out) == 5:
-                if lang == 'java':
-                    if out[1] == 'Java':
-                        LoC += int(out[-1])
-                elif lang == 'cpp':
-                    try:
-                        ['C++', 'C/C++ Header'].index(out[1])
-                        LoC += int(out[-1])
-                    except:
-                        pass
-                else:
-                    if out[1] == 'Python':
-                        LoC += int(out[-1])
-
-        logging.info(f'LoC for {project_name} is {LoC}')
+        try:
+            proc = subprocess.check_output(cmd, shell=True)
+            outs = proc.strip().decode('utf-8').splitlines()
+            for out in outs:
+                out = out.split(',')
+                if len(out) == 5:
+                    if lang == 'java':
+                        if out[1] == 'Java':
+                            LoC += int(out[-1])
+                    elif lang == 'cpp':
+                        try:
+                            ['C++', 'C/C++ Header'].index(out[1])
+                            LoC += int(out[-1])
+                        except:
+                            pass
+                    else:
+                        if out[1] == 'Python':
+                            LoC += int(out[-1])
+            logging.info(f'LoC for {project_name} is {LoC}')
+        except subprocess.CalledProcessError:
+            logging.exception(
+                f'Failed couting linc of code for project \'{project_name}\'')
         records['LoC'] = LoC
 
         # Run ENRE
@@ -194,7 +197,9 @@ if __name__ == '__main__':
             proc.kill()
             logging.info(
                 f'Running ENRE-{args.lang} on {project_name} costs {time_end - time_start}')
-            records["ENRE"] = time_end - time_start
+            records['ENRE'] = time_end - time_start
+        else:
+            records['ENRE'] = 0
 
         if only == 'depends' or only == '':
             # Run Depends
@@ -214,7 +219,9 @@ if __name__ == '__main__':
             proc.kill()
             logging.info(
                 f'Running Depends on {project_name} costs {time_end - time_start}')
-            records["Depends"] = time_end - time_start
+            records['Depends'] = time_end - time_start
+        else:
+            records['Depends'] = 0
 
         if only == 'understand' or only == '':
             # Run Understand
@@ -226,13 +233,20 @@ if __name__ == '__main__':
             logging.info(
                 f'Running Understand on {project_name} costs {time_end - time_start}')
             records["Understand"] = time_end - time_start
+        else:
+            records['Understand'] = 0
 
         # Instantly save time info whenever a project is finished analizing
+        # to prevent from crashing.
         with open(f'{outfile_path}.pending', 'a+') as f:
             f.write(
                 f'{project_name},{LoC},{records["ENRE"]},{records["Depends"]},{records["Understand"]}\n')
 
     try:
+        # Remove `.pending` identifier to indicates to whole process succeeded
+        # After the finishing of this script, if `.pending` still exists,
+        # you might want to check out log files since it's a sign of some exception
+        # has taken place.
         rename(f'{outfile_path}.pending', outfile_path)
     except:
         logging.error(f'Lost output file {outfile_path}!')
