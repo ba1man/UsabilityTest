@@ -151,33 +151,36 @@ if __name__ == '__main__':
 
         records = dict()
 
-        # Obtain LoC
-        print('Counting line of code')
-        LoC = 0
-        cmd = f'.\\utils\\cloc-1.92.exe ./repo/{project_name} --csv --quiet'
-        try:
-            proc = subprocess.check_output(cmd, shell=True)
-            outs = proc.strip().decode('utf-8').splitlines()
-            for out in outs:
-                out = out.split(',')
-                if len(out) == 5:
-                    if lang == 'java':
-                        if out[1] == 'Java':
-                            LoC += int(out[-1])
-                    elif lang == 'cpp':
-                        try:
-                            ['C++', 'C/C++ Header'].index(out[1])
-                            LoC += int(out[-1])
-                        except:
-                            pass
-                    else:
-                        if out[1] == 'Python':
-                            LoC += int(out[-1])
-            logging.info(f'LoC for {project_name} is {LoC}')
-        except subprocess.CalledProcessError:
-            logging.exception(
-                f'Failed couting line of code for project \'{project_name}\'')
-        records['LoC'] = LoC
+        # Obtain LoC (only when process all tools)
+        if only == '':
+            print('Counting line of code')
+            LoC = 0
+            cmd = f'.\\utils\\cloc-1.92.exe ./repo/{project_name} --csv --quiet'
+            try:
+                proc = subprocess.check_output(cmd, shell=True)
+                outs = proc.strip().decode('utf-8').splitlines()
+                for out in outs:
+                    out = out.split(',')
+                    if len(out) == 5:
+                        if lang == 'java':
+                            if out[1] == 'Java':
+                                LoC += int(out[-1])
+                        elif lang == 'cpp':
+                            try:
+                                ['C++', 'C/C++ Header'].index(out[1])
+                                LoC += int(out[-1])
+                            except:
+                                pass
+                        else:
+                            if out[1] == 'Python':
+                                LoC += int(out[-1])
+                logging.info(f'LoC for {project_name} is {LoC}')
+            except subprocess.CalledProcessError:
+                logging.exception(
+                    f'Failed couting line of code for project \'{project_name}\'')
+            records['LoC'] = LoC
+        else:
+            records['LoC'] = 0
 
         # Run ENRE
         if only == 'enre' or only == '':
@@ -185,13 +188,16 @@ if __name__ == '__main__':
             if args.lang == 'java':
                 cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-java.jar")} java {path.join(path.dirname(__file__), "./repo")}/{project_name} {project_name}'
             elif args.lang == 'cpp':
-                cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} cpp {path.join(path.dirname(__file__), "./repo")}/{project_name} {project_name} {project_name}'
+                # FIXME: Change / to \ as a workaround for an ENRE-cpp issue regarding to path handling
+                cmd = f'java -jar {path.abspath(path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar"))} cpp {path.abspath(path.join(path.dirname(__file__), "./repo"))}\{project_name} {project_name} {project_name}'
             else:
                 cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {path.join(path.dirname(__file__), "./repo")}/{project_name}'
+            print(cmd)
             time_start = time.time()
             # Let ENREs output in sandbox
             proc = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, cwd=f'./out/enre-{lang}')
+
             while proc.poll() is None:
                 harmony_print(proc.stdout.readline().strip(), project_name)
             time_end = time.time()
@@ -241,7 +247,7 @@ if __name__ == '__main__':
         # to prevent from crashing.
         with open(f'{outfile_path}.pending', 'a+') as f:
             f.write(
-                f'{project_name},{LoC},{records["ENRE"]},{records["Depends"]},{records["Understand"]}\n')
+                f'{project_name},{records["LoC"]},{records["ENRE"]},{records["Depends"]},{records["Understand"]}\n')
 
     try:
         # Remove `.pending` identifier to indicates to whole process succeeded
