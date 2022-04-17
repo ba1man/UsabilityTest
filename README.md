@@ -6,7 +6,10 @@ You need:
 
 - A computer with `Windows 10` as operating system
 
-- `SciTools Understand` installed
+- `Java` latest installed (>= 15) and can be accessed via environment path
+  > Some tools depends on JRE to run.
+
+- `SciTools Understand` installed and can be accessed via environment path
   > Apply for a free student license on the [website](https://www.scitools.com/student/) if you don't have a one.
 
 - `Sourcetrail` installed
@@ -39,7 +42,7 @@ Boom, you are free to afk.
 
 ## Submit results
 
-We want newly generated files under these directories:
+We want all newly generated files under these directories:
 
 * `logs/`
 * `time-records/`
