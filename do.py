@@ -93,7 +93,7 @@ if __name__ == '__main__':
     logging.info(
         f'Working on {from_line}-{end_line} for {lang} with {"all tools" if only == "" else f"{only} only"}')
 
-    outfile_path = f'./time-records/{timestamp}-{lang}-{from_line}-{end_line}.csv'
+    outfile_path = f'./records/{timestamp}-{lang}-{from_line}-{end_line}.csv'
 
     project_clone_url_list = dict()
     try:
@@ -192,7 +192,6 @@ if __name__ == '__main__':
                 cmd = f'java -jar {path.abspath(path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar"))} cpp {path.abspath(path.join(path.dirname(__file__), "./repo"))}\{project_name} {project_name} {project_name}'
             else:
                 cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {path.join(path.dirname(__file__), "./repo")}/{project_name}'
-            print(cmd)
             time_start = time.time()
             # Let ENREs output in sandbox
             proc = subprocess.Popen(
