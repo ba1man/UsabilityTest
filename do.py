@@ -20,6 +20,9 @@ from datetime import datetime
 import re
 
 
+TIMELIMIT = 300
+
+
 def harmony_print(raw, source):
     try:
         print(raw.decode('utf-8'))
@@ -197,13 +200,23 @@ if __name__ == '__main__':
             proc = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, cwd=f'./out/enre-{lang}')
 
+            timeout = False
             while proc.poll() is None:
                 harmony_print(proc.stdout.readline().strip(), project_name)
-            time_end = time.time()
-            proc.kill()
-            logging.info(
-                f'Running ENRE-{args.lang} on {project_name} costs {time_end - time_start}')
-            records['ENRE'] = time_end - time_start
+                if time.time() - time_start > TIMELIMIT:
+                    timeout = True
+                    proc.kill()
+                    logging.info(
+                        f'Running ENRE-{lang} on {project_name} timed out')
+                    break
+            if timeout is not True:
+                time_end = time.time()
+                proc.kill()
+                records['ENRE'] = time_end - time_start
+                logging.info(
+                    f'Running ENRE-{lang} on {project_name} costs {records["ENRE"]}')
+            else:
+                records['ENRE'] = 0
         else:
             records['ENRE'] = 0
 
@@ -212,20 +225,27 @@ if __name__ == '__main__':
             print('starting Depends')
             cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {path.join(path.dirname(__file__), "./repo")}/{project_name} {project_name}'
             time_start = time.time()
-            if lang == 'java':
-                # Depends always save output at the cwd, so change cwd to ./out
-                proc = subprocess.Popen(
-                    cmd, shell=True, stdout=subprocess.PIPE, cwd='./out/depends')
-            else:
-                proc = subprocess.Popen(
-                    cmd, shell=True, stdout=subprocess.PIPE)
+            # Depends always save output at the cwd, so change cwd to ./out
+            proc = subprocess.Popen(
+                cmd, shell=True, stdout=subprocess.PIPE, cwd='./out/depends')
+
+            timeout = False
             while proc.poll() is None:
                 harmony_print(proc.stdout.readline().strip(), project_name)
-            time_end = time.time()
-            proc.kill()
-            logging.info(
-                f'Running Depends on {project_name} costs {time_end - time_start}')
-            records['Depends'] = time_end - time_start
+                if time.time() - time_start > TIMELIMIT:
+                    timeout = True
+                    proc.kill()
+                    logging.info(
+                        f'Running Depends on {project_name} timed out')
+                    break
+            if timeout is not True:
+                time_end = time.time()
+                proc.kill()
+                records['Depends'] = time_end - time_start
+                logging.info(
+                    f'Running Depends on {project_name} costs {records["Depends"]}')
+            else:
+                records['Depends'] = 0
         else:
             records['Depends'] = 0
 

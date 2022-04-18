@@ -8,7 +8,6 @@ out/sourcetrail/*
 out/understand/*
 repo/*
 records/*
-analyze/*
 log-samples/*
 
 !**/KEEP THIS DIR
