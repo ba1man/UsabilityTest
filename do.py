@@ -25,11 +25,14 @@ TIMELIMIT = 300
 
 def harmony_print(raw, source):
     try:
-        print(raw.decode('utf-8'))
+        decode = raw.decode('utf-8')
+        print(decode, end='\n\n')
+        return decode
     except UnicodeDecodeError:
         logging.warning(
             f'Metting utf-8 decode error for understand in project {source}')
         print(raw)
+        return ''
 
 
 def create_udb(lang, project_root, udb_path):
@@ -89,7 +92,7 @@ if __name__ == '__main__':
 
     only = args.only.lower() if args.only is not None else ''
     try:
-        ['clone', 'enre', 'depends', 'understand', ''].index(only)
+        ['clone', 'loc' 'enre', 'depends', 'understand', ''].index(only)
     except:
         raise f'Invalid tool {only}, only support enre / depends / understand / clone'
 
@@ -155,7 +158,7 @@ if __name__ == '__main__':
         records = dict()
 
         # Obtain LoC (only when process all tools)
-        if only == '':
+        if only == 'loc' or only == '':
             print('Counting line of code')
             LoC = 0
             cmd = f'.\\utils\\cloc-1.92.exe ./repo/{project_name} --csv --quiet'
@@ -229,21 +232,33 @@ if __name__ == '__main__':
             proc = subprocess.Popen(
                 cmd, shell=True, stdout=subprocess.PIPE, cwd='./out/depends')
 
-            timeout = False
+            fail = False
             while proc.poll() is None:
-                harmony_print(proc.stdout.readline().strip(), project_name)
+                out = harmony_print(
+                    proc.stdout.readline().strip(), project_name)
+                match = re.match(
+                    r'java\.lang\.StackOverflowError', out)
+                print(match)
+                if match:
+                    fail = 'sov'
+                    proc.kill()
+                    logging.info(
+                        f'Running Depends on {project_name} encountering StackOverflow error')
+                    break
                 if time.time() - time_start > TIMELIMIT:
-                    timeout = True
+                    fail = 'timeout'
                     proc.kill()
                     logging.info(
                         f'Running Depends on {project_name} timed out')
                     break
-            if timeout is not True:
+            if fail is not False:
                 time_end = time.time()
                 proc.kill()
                 records['Depends'] = time_end - time_start
                 logging.info(
                     f'Running Depends on {project_name} costs {records["Depends"]}')
+            elif fail == 'sov':
+                records['Depends'] = -1
             else:
                 records['Depends'] = 0
         else:

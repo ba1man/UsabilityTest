@@ -43,6 +43,7 @@ where,
 >   * `depends`: Runs `Depends` only
 >   * `understand`: Runs `Understand` only
 >   * `clone`: Just clone the repositories
+>   * `loc`: Just count the LoC
 
 We highly encourage you to run this script under `Windows Terminal` + `PowerShell`, this conbination suits the modern world on Windows platform.
 
