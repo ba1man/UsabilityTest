@@ -92,9 +92,9 @@ if __name__ == '__main__':
 
     only = args.only.lower() if args.only is not None else ''
     try:
-        ['clone', 'loc' 'enre', 'depends', 'understand', ''].index(only)
+        ['clone', 'loc', 'enre', 'depends', 'understand', ''].index(only)
     except:
-        raise f'Invalid tool {only}, only support enre / depends / understand / clone'
+        raise f'Invalid tool {only}, only support enre / depends / understand / clone / loc'
 
     logging.info(
         f'Working on {from_line}-{end_line} for {lang} with {"all tools" if only == "" else f"{only} only"}')
