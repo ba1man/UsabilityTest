@@ -52,6 +52,10 @@ error
 Syntax error in file: UsabilityTest\repo\terminal\src\renderer\dx\CustomTextLayout.cpp:132
 ```
 
+#### StackOverflow
+
+Depends crashes easily, by a stack overflow exception.
+
 ### SourceTrail
 
 
