@@ -364,7 +364,7 @@ for project_name in project_clone_url_list.keys():
             records['Understand-time'] = time_end - time_start
             records['Understand-memory'] = peak_memory
             logging.info(
-                f'Running Understand on {project_name} costs {records["Understand-time"]}'
+                f'Running Understand on {project_name} costs {records["Understand-time"]}s'
                 + f' and {records["Understand-memory"]}MB' if records['Understand-memory'] != -1 else "")
     else:
         records['Understand-time'] = 0
