@@ -90,7 +90,7 @@ except:
 # Feature set
 timeout = args.timeout  # None, or positive int
 if timeout is not None:
-    if timeout < 0 or timeout > 3600:
+    if timeout < 360 or timeout > 3600:
         raise ValueError(
             f'Invalid timeout value {timeout}, only range(300, 3600) are valid')
 
@@ -119,7 +119,7 @@ try:
         project_list = csv.reader(file)
         count = 0
         for row in project_list:
-            if (count >= from_line) & (count <= end_line):
+            if (count >= from_line) and (count <= end_line):
                 project_name = row[0].split("/")[-1]
                 # Some project's git url is in 3rd column, rather than 4th column,
                 # which is weird. (Encoding problem) This handles that situation.
