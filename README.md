@@ -24,7 +24,7 @@ You need:
 ## Run test, with only one command
 
 ```sh
-$ python do.py <lang> <range> [only]
+$ python do.py <lang> <range> [only] [-t --timeout <range(300, 3600)>]
 ```
 
 where,
@@ -44,6 +44,8 @@ where,
 >   * `understand`: Runs `Understand` only
 >   * `clone`: Just clone the repositories
 >   * `loc`: Just count the LoC
+
+* `-t --timeout` limits the maximum duration a process can take, this feature is activated only when a valid number is given.
 
 We highly encourage you to run this script under `Windows Terminal` + `PowerShell`, this conbination suits the modern world on Windows platform.
 

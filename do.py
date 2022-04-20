@@ -9,6 +9,8 @@ This script depends on:
 This script has only been tested on Windows 10.
 '''
 
+import re
+import io
 import logging
 from os import path, rename
 import sys
@@ -17,42 +19,19 @@ import subprocess
 import time
 import argparse
 from datetime import datetime
-import re
-
-
-TIMELIMIT = 300
+from threading import Timer
 
 
 def harmony_print(raw, source):
     try:
         decode = raw.decode('utf-8')
-        print(decode, end='\n\n')
+        print(decode)
         return decode
     except UnicodeDecodeError:
         logging.warning(
             f'Metting utf-8 decode error for understand in project {source}')
         print(raw)
         return ''
-
-
-def create_udb(lang, project_root, udb_path):
-    if lang == 'cpp':
-        ulang = 'C++'
-    elif lang == 'java':
-        ulang = 'Java'
-    else:
-        ulang = 'Python'
-
-    try:
-        output = subprocess.check_output(
-            f'und create -db {udb_path} -languages {ulang}',
-            shell=True)
-        harmony_print(output, project_root)
-        output = subprocess.check_output(
-            f'und add -db {udb_path} {project_root} analyze -all', shell=True)
-        harmony_print(output, project_root)
-    except subprocess.CalledProcessError as e:
-        logging.exception(f'Failed to create udb {e.output.decode("utf-8")}')
 
 
 if __name__ == '__main__':
@@ -72,13 +51,18 @@ if __name__ == '__main__':
     parser.add_argument('lang', help='Sepcify the target language')
     parser.add_argument('range', help='Specify the start line from csv file')
     parser.add_argument('only', help='Specify the only tool to run', nargs='?')
+    parser.add_argument('-t',
+                        '--timeout',
+                        help='Specify the maximum duration of a single process',
+                        type=int)
     args = parser.parse_args()
 
     lang = args.lang
     try:
         ['cpp', 'java', 'python'].index(lang)
     except:
-        raise f'Invalid lang {lang}, only support cpp / java / python'
+        raise ValueError(
+            f'Invalid lang {lang}, only support cpp / java / python')
 
     range = args.range.split('-')
     if len(range) == 1:
@@ -88,16 +72,25 @@ if __name__ == '__main__':
         from_line = int(range[0])
         end_line = int(range[1])
     else:
-        raise f'Invalid range format {args.range}, only support x or x-x'
+        raise ValueError(
+            f'Invalid range format {args.range}, only support x or x-x')
 
     only = args.only.lower() if args.only is not None else ''
     try:
         ['clone', 'loc', 'enre', 'depends', 'understand', ''].index(only)
     except:
-        raise f'Invalid tool {only}, only support enre / depends / understand / clone / loc'
+        raise ValueError(
+            f'Invalid tool {only}, only support enre / depends / understand / clone / loc')
+
+    # Feature set
+    timeout = args.timeout  # None, or positive int
+    if timeout is not None:
+        if timeout < 0 or timeout > 3600:
+            raise ValueError(
+                f'Invalid timeout value {timeout}, only range(300, 3600) are valid')
 
     logging.info(
-        f'Working on {from_line}-{end_line} for {lang} with {"all tools" if only == "" else f"{only} only"}')
+        f'Working on {from_line}-{end_line} for {lang} with {"all tools" if only == "" else f"{only} only"}{f" and timeout limit to {timeout}" if timeout is not None else ""}')
 
     outfile_path = f'./records/{timestamp}-{lang}-{from_line}-{end_line}.csv'
 
@@ -122,28 +115,30 @@ if __name__ == '__main__':
 
     # Cloning (or reusing) repository from GitHub
     for project_name in project_clone_url_list.keys():
-        expected = f'./repo/{project_name}'
-        if not path.exists(expected):
+        repo_path = f'./repo/{project_name}'
+        abs_repo_path = path.join(path.dirname(__file__), repo_path)
+        if not path.exists(repo_path):
             logging.info(f'Cloning \'{project_name}\'')
             fail_count = 0
 
             jump = False
-            while not path.exists(expected):
+            while not path.exists(repo_path):
                 # Depth 1 for only current revison
-                cmd = f'git clone --depth 1 {project_clone_url_list[project_name]} {expected}'
+                cmd = f'git clone --depth 1 {project_clone_url_list[project_name]} {repo_path}'
+
                 proc = subprocess.Popen(
-                    cmd, shell=True, stdout=subprocess.PIPE)
-                while proc.poll() is None:
-                    out = proc.stdout.readline().strip()
-                    harmony_print(out, project_name)
-                proc.kill()
-                if not path.exists(expected):
+                    cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                for line in io.TextIOWrapper(proc.stdout):
+                    print(line, end='')
+
+                if not path.exists(repo_path):
                     logging.warning(
                         f'Failed cloning with return code {proc.poll()}, retry in 2 mins')
                     fail_count += 1
                     if fail_count < 4:
                         # If fails cloning, retry after cooldown
                         time.sleep(2*60)
+                        continue
                     else:
                         logging.fatal(
                             f'Unable to clone {project_clone_url_list[project_name]} after 3 tries, go to next')
@@ -161,9 +156,20 @@ if __name__ == '__main__':
         if only == 'loc' or only == '':
             print('Counting line of code')
             LoC = 0
-            cmd = f'.\\utils\\cloc-1.92.exe ./repo/{project_name} --csv --quiet'
+            cmd = f'.\\utils\\cloc-1.92.exe {repo_path} --csv --quiet'
             try:
-                proc = subprocess.check_output(cmd, shell=True)
+                # A fixed timeout threshold
+                proc = subprocess.check_output(
+                    cmd, timeout=2)
+            except subprocess.TimeoutExpired:
+                logging.exception(
+                    f'Counting LoC for {project_name} timed out')
+                records['LoC'] = -1
+            except subprocess.CalledProcessError:
+                logging.exception(
+                    f'Failed couting line of code for {project_name}')
+                records['LoC'] = -1
+            else:
                 outs = proc.strip().decode('utf-8').splitlines()
                 for out in outs:
                     out = out.split(',')
@@ -181,9 +187,6 @@ if __name__ == '__main__':
                             if out[1] == 'Python':
                                 LoC += int(out[-1])
                 logging.info(f'LoC for {project_name} is {LoC}')
-            except subprocess.CalledProcessError:
-                logging.exception(
-                    f'Failed couting line of code for project \'{project_name}\'')
             records['LoC'] = LoC
         else:
             records['LoC'] = 0
@@ -192,92 +195,127 @@ if __name__ == '__main__':
         if only == 'enre' or only == '':
             print('Starting ENRE')
             if args.lang == 'java':
-                cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-java.jar")} java {path.join(path.dirname(__file__), "./repo")}/{project_name} {project_name}'
+                cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-java.jar")} java {abs_repo_path} {project_name}'
             elif args.lang == 'cpp':
-                # FIXME: Change / to \ as a workaround for an ENRE-cpp issue regarding to path handling
-                cmd = f'java -jar {path.abspath(path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar"))} cpp {path.abspath(path.join(path.dirname(__file__), "./repo"))}\{project_name} {project_name} {project_name}'
+                cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} cpp {abs_repo_path} {project_name} {project_name}'
             else:
-                cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {path.join(path.dirname(__file__), "./repo")}/{project_name}'
-            time_start = time.time()
-            # Let ENREs output in sandbox
-            proc = subprocess.Popen(
-                cmd, shell=True, stdout=subprocess.PIPE, cwd=f'./out/enre-{lang}')
+                cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {abs_repo_path}'
 
-            timeout = False
-            while proc.poll() is None:
-                harmony_print(proc.stdout.readline().strip(), project_name)
-                if time.time() - time_start > TIMELIMIT:
-                    timeout = True
+            time_start = time.time()
+            proc = subprocess.Popen(
+                cmd,
+                # Do not use shell, which will create shell->jvm, a sub-subprocess, which
+                # won't be killed just by calling shell's `.kill()`; whereas,
+                # without shell, the jvm subprocess is directly returned, which can be killed then.
+                # shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                cwd=f'./out/enre-{lang}')
+
+            killed = False
+            if timeout is not None:
+                def handle_timeout():
+                    global killed
+                    killed = True
                     proc.kill()
-                    logging.info(
+                    logging.warning(
                         f'Running ENRE-{lang} on {project_name} timed out')
-                    break
-            if timeout is not True:
-                time_end = time.time()
-                proc.kill()
+                    records['ENRE'] = -1
+
+                timer = Timer(timeout, handle_timeout)
+                timer.start()
+
+            for line in io.TextIOWrapper(proc.stdout):
+                print(line, end='')
+            time_end = time.time()
+
+            if not killed:
                 records['ENRE'] = time_end - time_start
                 logging.info(
                     f'Running ENRE-{lang} on {project_name} costs {records["ENRE"]}')
-            else:
-                records['ENRE'] = 0
         else:
             records['ENRE'] = 0
 
         if only == 'depends' or only == '':
             # Run Depends
             print('starting Depends')
-            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {path.join(path.dirname(__file__), "./repo")}/{project_name} {project_name}'
-            time_start = time.time()
-            # Depends always save output at the cwd, so change cwd to ./out
-            proc = subprocess.Popen(
-                cmd, shell=True, stdout=subprocess.PIPE, cwd='./out/depends')
+            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name}'
 
-            fail = False
-            while proc.poll() is None:
-                out = harmony_print(
-                    proc.stdout.readline().strip(), project_name)
-                match = re.match(
-                    r'java\.lang\.StackOverflowError', out)
-                print(match)
-                if match:
-                    fail = 'sov'
+            time_start = time.time()
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                cwd='./out/depends')
+
+            killed = False
+            if timeout is not None:
+                def handle_timeout():
+                    global killed
+                    killed = True
                     proc.kill()
-                    logging.info(
-                        f'Running Depends on {project_name} encountering StackOverflow error')
-                    break
-                if time.time() - time_start > TIMELIMIT:
-                    fail = 'timeout'
-                    proc.kill()
-                    logging.info(
+                    logging.warning(
                         f'Running Depends on {project_name} timed out')
-                    break
-            if fail is not False:
-                time_end = time.time()
-                proc.kill()
+                    records['Depends'] = -1
+
+                timer = Timer(timeout, handle_timeout)
+                timer.start()
+
+            for line in io.TextIOWrapper(proc.stdout):
+                print(line, end='')
+            time_end = time.time()
+
+            if not killed:
                 records['Depends'] = time_end - time_start
                 logging.info(
                     f'Running Depends on {project_name} costs {records["Depends"]}')
-            elif fail == 'sov':
-                records['Depends'] = -1
-            else:
-                records['Depends'] = 0
         else:
             records['Depends'] = 0
 
         if only == 'understand' or only == '':
             # Run Understand
             print('Starting Understand')
+            upath = f'./out/understand/{project_name}.und'
+            if lang == 'cpp':
+                ulang = 'C++'
+            elif lang == 'java':
+                ulang = 'Java'
+            else:
+                ulang = 'Python'
+            cmd = f'und create -db {upath} -languages {ulang} add {abs_repo_path} analyze -all'
+
             time_start = time.time()
-            create_udb(lang, f'./repo/{project_name}',
-                       f'./out/understand/{project_name}.und')
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                cwd='./out/understand')
+
+            killed = False
+            if timeout is not None:
+                def handle_timeout():
+                    global killed
+                    killed = True
+                    proc.kill()
+                    logging.warning(
+                        f'Running Understand on {project_name} timed out')
+                    records['Understand'] = -1
+
+                timer = Timer(timeout, handle_timeout)
+                timer.start()
+
+            for line in io.TextIOWrapper(proc.stdout):
+                print(line, end='')
             time_end = time.time()
-            logging.info(
-                f'Running Understand on {project_name} costs {time_end - time_start}')
-            records["Understand"] = time_end - time_start
+
+            if not killed:
+                records['Understand'] = time_end - time_start
+                logging.info(
+                    f'Running Understand on {project_name} costs {records["Understand"]}')
         else:
             records['Understand'] = 0
 
-        # Instantly save time info whenever a project is finished analizing
+        # Instantly save duration info whenever a project is finished analizing
         # to prevent from crashing.
         with open(f'{outfile_path}.pending', 'a+') as f:
             f.write(
