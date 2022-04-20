@@ -21,6 +21,9 @@ You need:
   $ git config --system core.longpaths true
   ```
 
+- Python package `psutil` installed
+  > This is used for memory usage profiling
+
 ## Run test, with only one command
 
 ```sh
