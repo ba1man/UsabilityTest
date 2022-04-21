@@ -196,9 +196,10 @@ for project_name in project_clone_url_list.keys():
         LoC = 0
         cmd = f'.\\utils\\cloc-1.92.exe {repo_path} --csv --quiet'
         try:
-            # A fixed timeout threshold
+            # A fixed timeout threshold is only activated on process all,
+            # which allow LoC counting to exeed the time when only process LoC
             proc = subprocess.check_output(
-                cmd, timeout=180)
+                cmd, timeout=180 if only == '' else None)
         except subprocess.TimeoutExpired:
             logging.exception(
                 f'Counting LoC for {project_name} timed out')
