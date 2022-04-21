@@ -90,13 +90,13 @@ except:
 # Feature set
 timeout = args.timeout  # None, or positive int
 if timeout is not None:
-    if timeout < 360 or timeout > 3600:
+    if timeout < 0 or timeout > 3600:
         raise ValueError(
             f'Invalid timeout value {timeout}, only range(300, 3600) are valid')
 
 logging.info(
     f'Working on {from_line}-{end_line} for {lang}'
-    + f'with {"all tools" if only == "" else f"{only} only"}'
+    + f' with {"all tools" if only == "" else f"{only} only"}'
     + f' and timeout limit to {timeout}' if timeout is not None else '')
 
 outfile_path = f'./records/{timestamp}-{lang}-{from_line}-{end_line}.csv'
@@ -251,16 +251,26 @@ for project_name in project_clone_url_list.keys():
             for line in io.TextIOWrapper(proc.stdout):
                 new_memory = retrieve_memory_usage(pid)
                 peak_memory = new_memory if new_memory > peak_memory else peak_memory
-                print(line, end='')
+                # print(line, end='')
+                print(peak_memory)
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on ENRE-{lang} while process {project_name}')
 
         time_end = time.time()
 
+        # No matter it been killed or not, still output the peak memory usage
+        records['ENRE-memory'] = peak_memory
         if not killed:
+            # Cancel the timer! if the process is finished within the time
+            try:
+                logging.info(
+                    f'ENRE-{lang} finished normally, cancel the timer')
+                timer.cancel()
+            except:
+                pass
+
             records['ENRE-time'] = time_end - time_start
-            records['ENRE-memory'] = peak_memory
 
             logging.info(
                 f'Running ENRE-{lang} on {project_name} costs {records["ENRE-time"]}s'
@@ -306,14 +316,20 @@ for project_name in project_clone_url_list.keys():
                 f'Suppressing an encoding error on Depends while process {project_name}')
         time_end = time.time()
 
+        records['Depends-memory'] = peak_memory
         if not killed:
+            try:
+                logging.info('Depends finished normally, cancel the timer')
+                timer.cancel()
+            except:
+                pass
+
             records['Depends-time'] = time_end - time_start
-            records['Depends-memory'] = peak_memory
             logging.info(
                 f'Running Depends on {project_name} costs {records["Depends-time"]}s'
                 + f' and {records["Depends-memory"]}MB' if records['Depends-memory'] != -1 else "")
     else:
-        records['Depends'] = 0
+        records['Depends-time'] = 0
         records['Depends-memory'] = 0
 
     if only == 'understand' or only == '':
@@ -360,9 +376,15 @@ for project_name in project_clone_url_list.keys():
                 f'Suppressing an encoding error on Understand while process {project_name}')
         time_end = time.time()
 
+        records['Understand-memory'] = peak_memory
         if not killed:
+            try:
+                logging.info('Process finished normally, cancel the timer')
+                timer.cancel()
+            except:
+                pass
+
             records['Understand-time'] = time_end - time_start
-            records['Understand-memory'] = peak_memory
             logging.info(
                 f'Running Understand on {project_name} costs {records["Understand-time"]}s'
                 + f' and {records["Understand-memory"]}MB' if records['Understand-memory'] != -1 else "")
