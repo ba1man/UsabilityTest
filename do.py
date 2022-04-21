@@ -22,6 +22,7 @@ import time
 import argparse
 from datetime import datetime
 from threading import Timer, Thread
+from functools import reduce
 
 
 timestamp = datetime.now().strftime("%y%m%d%H%M")
@@ -45,19 +46,30 @@ def memory_profiling(pid):
     value = {'peak': -1}
 
     def task(pid, value):
+        if psutil is None:
+            value['peak'] = -1
+            return value
+
         while True:
             prev = value['peak']
             try:
+                me = psutil.Process(pid)
+                # Also counting descendents
+                children = me.children(recursive=True)
+                curr = me.memory_info().rss
+                curr += reduce(lambda p, v: p + v,
+                               map(lambda sp: sp.memory_info().rss, children), 0)
                 # Convert unit from B to MB
-                curr = psutil.Process(pid).memory_info(
-                ).rss / 1024 / 1024 if psutil is not None else -1
+                curr /= 1024 ** 2
             except (psutil.ProcessLookupError, psutil.NoSuchProcess):
                 # This usually happens after the process is finished/killed but the function is still invoked
-                logging.warning(f'Losing process with pid={pid}')
+                logging.warning(
+                    f'Losing process with pid={pid} (or its subprocesses)')
                 # By breaking the loop, this thread should be terminated
                 break
             else:
                 value['peak'] = curr if curr > prev else prev
+                print(value['peak'])
                 # Set interval to 0.5 for the tradeoff between accuracy and performance
                 # (busy loop will cause the target process to be extremely slow, which
                 # should definitely not be used)
@@ -268,10 +280,12 @@ for project_name in project_clone_url_list.keys():
             timer.start()
 
         pid = proc.pid
+        print(pid)
         memory = memory_profiling(pid)
         try:
             for line in io.TextIOWrapper(proc.stdout):
-                print(line, end='')
+                #print(line, end='')
+                continue
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on ENRE-{lang} while process {project_name}')
