@@ -69,7 +69,6 @@ def memory_profiling(pid):
                 break
             else:
                 value['peak'] = curr if curr > prev else prev
-                print(value['peak'])
                 # Set interval to 0.5 for the tradeoff between accuracy and performance
                 # (busy loop will cause the target process to be extremely slow, which
                 # should definitely not be used)
@@ -280,12 +279,10 @@ for project_name in project_clone_url_list.keys():
             timer.start()
 
         pid = proc.pid
-        print(pid)
         memory = memory_profiling(pid)
         try:
             for line in io.TextIOWrapper(proc.stdout):
-                #print(line, end='')
-                continue
+                print(line, end='')
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on ENRE-{lang} while process {project_name}')
