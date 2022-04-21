@@ -21,7 +21,7 @@ import subprocess
 import time
 import argparse
 from datetime import datetime
-from threading import Timer
+from threading import Timer, Thread
 
 
 timestamp = datetime.now().strftime("%y%m%d%H%M")
@@ -41,14 +41,30 @@ except:
     logging.warning('Can not import psutil, memory usage monitoring disabled')
 
 
-def retrieve_memory_usage(pid):
-    try:
-        # Convert unit from B to MB
-        return psutil.Process(pid).memory_info().rss / 1024 / 1024 if psutil is not None else -1
-    except (psutil.ProcessLookupError, psutil.NoSuchProcess):
-        # This usually happens after the process is finished/killed but the function is still invoked
-        logging.warning(f'Losing process with pid={pid}')
-        return 0
+def memory_profiling(pid):
+    value = {'peak': -1}
+
+    def task(pid, value):
+        while True:
+            prev = value['peak']
+            try:
+                # Convert unit from B to MB
+                curr = psutil.Process(pid).memory_info(
+                ).rss / 1024 / 1024 if psutil is not None else -1
+            except (psutil.ProcessLookupError, psutil.NoSuchProcess):
+                # This usually happens after the process is finished/killed but the function is still invoked
+                logging.warning(f'Losing process with pid={pid}')
+                # By breaking the loop, this thread should be terminated
+                break
+            else:
+                value['peak'] = curr if curr > prev else prev
+                # Set interval to 0.5 for the tradeoff between accuracy and performance
+                # (busy loop will cause the target process to be extremely slow, which
+                # should definitely not be used)
+                time.sleep(0.5)
+
+    Thread(target=task, args=(pid, value,)).start()
+    return value
 
 
 # Usage
@@ -93,11 +109,14 @@ if timeout is not None:
     if timeout < 0 or timeout > 3600:
         raise ValueError(
             f'Invalid timeout value {timeout}, only range(300, 3600) are valid')
+        if timeout < 300:
+            logging.warning(
+                f'Unrecommended timeout value {timeout}, this value is too low to get useful information, and is allowed only for debug purpose')
 
 logging.info(
     f'Working on {from_line}-{end_line} for {lang}'
     + f' with {"all tools" if only == "" else f"{only} only"}'
-    + f' and timeout limit to {timeout}' if timeout is not None else '')
+    + (f' and timeout limit to {timeout}' if timeout is not None else ''))
 
 outfile_path = f'./records/{timestamp}-{lang}-{from_line}-{end_line}.csv'
 
@@ -220,7 +239,8 @@ for project_name in project_clone_url_list.keys():
         else:
             cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {abs_repo_path}'
 
-        peak_memory = -1
+        # Whether placing the start of timer here or after the creation
+        # has no significant impact on the final duration
         time_start = time.time()
         proc = subprocess.Popen(
             cmd,
@@ -247,20 +267,17 @@ for project_name in project_clone_url_list.keys():
             timer.start()
 
         pid = proc.pid
+        memory = memory_profiling(pid)
         try:
             for line in io.TextIOWrapper(proc.stdout):
-                new_memory = retrieve_memory_usage(pid)
-                peak_memory = new_memory if new_memory > peak_memory else peak_memory
-                # print(line, end='')
-                print(peak_memory)
+                print(line, end='')
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on ENRE-{lang} while process {project_name}')
-
         time_end = time.time()
 
         # No matter it been killed or not, still output the peak memory usage
-        records['ENRE-memory'] = peak_memory
+        records['ENRE-memory'] = memory['peak']
         if not killed:
             # Cancel the timer! if the process is finished within the time
             try:
@@ -274,7 +291,7 @@ for project_name in project_clone_url_list.keys():
 
             logging.info(
                 f'Running ENRE-{lang} on {project_name} costs {records["ENRE-time"]}s'
-                + f' and {records["ENRE-memory"]}MB' if records['ENRE-memory'] != -1 else "")
+                + (f' and {records["ENRE-memory"]}MB' if records['ENRE-memory'] != -1 else ''))
     else:
         records['ENRE-time'] = 0
         records['ENRE-memory'] = 0
@@ -284,7 +301,6 @@ for project_name in project_clone_url_list.keys():
         print('starting Depends')
         cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name}'
 
-        peak_memory = -1
         time_start = time.time()
         proc = subprocess.Popen(
             cmd,
@@ -300,23 +316,22 @@ for project_name in project_clone_url_list.keys():
                 proc.kill()
                 logging.warning(
                     f'Running Depends on {project_name} timed out')
-                records['Depends'] = -1
+                records['Depends-time'] = -1
 
             timer = Timer(timeout, handle_timeout)
             timer.start()
 
         pid = proc.pid
+        memory = memory_profiling(pid)
         try:
             for line in io.TextIOWrapper(proc.stdout):
-                new_memory = retrieve_memory_usage(pid)
-                peak_memory = new_memory if new_memory > peak_memory else peak_memory
                 print(line, end='')
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on Depends while process {project_name}')
         time_end = time.time()
 
-        records['Depends-memory'] = peak_memory
+        records['Depends-memory'] = memory['peak']
         if not killed:
             try:
                 logging.info('Depends finished normally, cancel the timer')
@@ -327,7 +342,7 @@ for project_name in project_clone_url_list.keys():
             records['Depends-time'] = time_end - time_start
             logging.info(
                 f'Running Depends on {project_name} costs {records["Depends-time"]}s'
-                + f' and {records["Depends-memory"]}MB' if records['Depends-memory'] != -1 else "")
+                + (f' and {records["Depends-memory"]}MB' if records['Depends-memory'] != -1 else ""))
     else:
         records['Depends-time'] = 0
         records['Depends-memory'] = 0
@@ -344,7 +359,6 @@ for project_name in project_clone_url_list.keys():
             ulang = 'Python'
         cmd = f'und create -db {upath} -languages {ulang} add {abs_repo_path} analyze -all'
 
-        peak_memory = -1
         time_start = time.time()
         proc = subprocess.Popen(
             cmd,
@@ -366,17 +380,16 @@ for project_name in project_clone_url_list.keys():
             timer.start()
 
         pid = proc.pid
+        memory = memory_profiling(pid)
         try:
             for line in io.TextIOWrapper(proc.stdout):
-                new_memory = retrieve_memory_usage(pid)
-                peak_memory = new_memory if new_memory > peak_memory else peak_memory
                 print(line, end='')
         except UnicodeDecodeError:
             logging.warning(
                 f'Suppressing an encoding error on Understand while process {project_name}')
         time_end = time.time()
 
-        records['Understand-memory'] = peak_memory
+        records['Understand-memory'] = memory['peak']
         if not killed:
             try:
                 logging.info('Process finished normally, cancel the timer')
@@ -387,7 +400,7 @@ for project_name in project_clone_url_list.keys():
             records['Understand-time'] = time_end - time_start
             logging.info(
                 f'Running Understand on {project_name} costs {records["Understand-time"]}s'
-                + f' and {records["Understand-memory"]}MB' if records['Understand-memory'] != -1 else "")
+                + (f' and {records["Understand-memory"]}MB' if records['Understand-memory'] != -1 else ""))
     else:
         records['Understand-time'] = 0
         records['Understand-memory'] = 0
