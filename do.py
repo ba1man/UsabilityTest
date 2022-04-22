@@ -135,9 +135,9 @@ if timeout is not None:
     if timeout < 0 or timeout > 3600:
         raise ValueError(
             f'Invalid timeout value {timeout}, only range(300, 3600) are valid')
-        if timeout < 300:
-            logging.warning(
-                f'Unrecommended timeout value {timeout}, this value is too low to get useful information, and is allowed only for debug purpose')
+    if timeout < 300:
+        logging.warning(
+            f'Unrecommended timeout value {timeout}, this value is too low to get useful information, and is allowed only for debug purpose')
 
 logging.info(
     f'Working on {from_line}-{end_line} for {lang}'
