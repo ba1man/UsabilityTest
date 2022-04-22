@@ -79,6 +79,7 @@ def memory_profiling(pid):
                     for c in children:
                         c.kill()
                     me.kill()
+                    value['peak'] = 0
                     logging.warning(
                         f'The process with pid={pid} took too much memory and thus been killed')
                     break
