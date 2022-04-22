@@ -69,6 +69,20 @@ def memory_profiling(pid):
                 break
             else:
                 value['peak'] = curr if curr > prev else prev
+
+                # ENRE-python has a memory leak bug if running in Windows 11 (not sure)
+                # so in general, if a process is taking too much memory,
+                # then we just kill it and let latter projects be run.
+                #
+                # Current threshold is 20GB
+                if value['peak'] > 1024 * 20:
+                    for c in children:
+                        c.kill()
+                    me.kill()
+                    logging.warning(
+                        f'The process with pid={pid} took too much memory and thus been killed')
+                    break
+
                 # Set interval to 0.5 for the tradeoff between accuracy and performance
                 # (busy loop will cause the target process to be extremely slow, which
                 # should definitely not be used)
