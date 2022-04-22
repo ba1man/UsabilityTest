@@ -2,13 +2,14 @@
 This script aims to run automated usability test on selected dependency exraction tools.
 
 This script depends on:
-    Git (through environment)
+    Git (through environment path)
     SciTools Understand (through environment path)
+    SourceTrail (through environment path)
     Java >= 15 (through environment path)
 
     pip install psutil // For memory usage monitoring
 
-This script has only been tested on Windows 10.
+This script has only been tested on Windows 10/11.
 '''
 
 import re
@@ -124,10 +125,11 @@ else:
 
 only = args.only.lower() if args.only is not None else ''
 try:
-    ['clone', 'loc', 'enre', 'depends', 'understand', ''].index(only)
+    ['clone', 'loc', 'enre', 'depends',
+        'understand', 'sourcetrail', ''].index(only)
 except:
     raise ValueError(
-        f'Invalid tool {only}, only support enre / depends / understand / clone / loc')
+        f'Invalid tool {only}, only support enre / depends / understand / sourcetrail / clone / loc')
 
 # Feature set
 timeout = args.timeout  # None, or positive int
@@ -155,7 +157,9 @@ with open(f'{outfile_path}.pending', 'a+') as f:
         + ',Depends-time'
         + ',Depends-memory'
         + ',Understand-time'
-        + '.Understand-memory'
+        + ',Understand-memory'
+        + ',SourceTrail-time'
+        + ',SourceTrail-memory'
         + '\n')
 
 project_clone_url_list = dict()
@@ -432,6 +436,64 @@ for project_name in project_clone_url_list.keys():
         records['Understand-time'] = 0
         records['Understand-memory'] = 0
 
+    if only == 'sourcetrail' or only == '':
+        # Run SourceTrail (only if the project has been created manually before)
+        print('Start SourceTrail')
+        spath = f'./out/sourcetrail/{project_name}/{project_name}.srctrlprj'
+        if path.exists(spath):
+            cmd = f'sourcetrail index --project-file {path.join(path.dirname(__file__), spath)}'
+
+            time_start = time.time()
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                shell=True)
+
+            killed = False
+            if timeout is not None:
+                def handle_timeout():
+                    global killed
+                    killed = True
+                    proc.kill()
+                    logging.warning(
+                        f'Running Sourcetrail on {project_name} timed out')
+                    records['SourceTrail-time'] = -1
+
+                timer = Timer(timeout, handle_timeout)
+                timer.start()
+
+            pid = proc.pid
+            memory = memory_profiling(pid)
+            try:
+                for line in io.TextIOWrapper(proc.stdout):
+                    print(line, end='')
+            except UnicodeDecodeError:
+                logging.warning(
+                    f'Suppressing an encoding error on SourceTrail while process {project_name}')
+            time_end = time.time()
+
+            records['SourceTrail-memory'] = memory['peak']
+            if not killed:
+                try:
+                    logging.info('Process finished normally, cancel the timer')
+                    timer.cancel()
+                except:
+                    pass
+
+                records['SourceTrail-time'] = time_end - time_start
+                logging.info(
+                    f'Running SourceTrail on {project_name} costs {records["SourceTrail-time"]}s'
+                    + (f' and {records["SourceTrail-memory"]}MB' if records['SourceTrail-memory'] != -1 else ""))
+        else:
+            logging.warning(
+                f'No SourceTrail project for {project_name}, skipped')
+            records['SourceTrail-time'] = 0
+            records['SourceTrail-memory'] = 0
+    else:
+        records['SourceTrail-time'] = 0
+        records['SourceTrail-memory'] = 0
+
     # Instantly save duration info whenever a project is finished analizing
     # to prevent from crashing.
     with open(f'{outfile_path}.pending', 'a+') as f:
@@ -444,6 +506,8 @@ for project_name in project_clone_url_list.keys():
             + f',{records["Depends-memory"]}'
             + f',{records["Understand-time"]}'
             + f',{records["Understand-memory"]}'
+            + f',{records["SourceTrail-time"]}'
+            + f',{records["SourceTrail-memory"]}'
             + '\n')
 
 try:
