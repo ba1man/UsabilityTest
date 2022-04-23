@@ -54,20 +54,26 @@ def memory_profiling(pid):
         while True:
             prev = value['peak']
             try:
+                psection = True
                 me = psutil.Process(pid)
+                curr = me.memory_info().rss
+                psection = False
                 # Also counting descendents
                 children = me.children(recursive=True)
-                curr = me.memory_info().rss
                 curr += reduce(lambda p, v: p + v,
                                map(lambda sp: sp.memory_info().rss, children), 0)
                 # Convert unit from B to MB
                 curr /= 1024 ** 2
             except (psutil.ProcessLookupError, psutil.NoSuchProcess):
-                # This usually happens after the process is finished/killed but the function is still invoked
-                logging.warning(
-                    f'Losing process with pid={pid} (or its subprocesses)')
-                # By breaking the loop, this thread should be terminated
-                break
+                if psection is True:
+                    # This usually happens after the process is finished/killed but the function is still invoked
+                    logging.warning(
+                        f'Losing process with pid={pid}')
+                    # By breaking the loop, this thread should be terminated
+                    break
+                else:
+                    # Suppress the losing of subprocesses
+                    pass
             else:
                 value['peak'] = curr if curr > prev else prev
 
@@ -447,8 +453,7 @@ for project_name in project_clone_url_list.keys():
             proc = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                shell=True)
+                stderr=subprocess.STDOUT)
 
             killed = False
             if timeout is not None:
