@@ -29,7 +29,8 @@ for lang in langs:
                 c = 1
                 for tool in tools:
                     for metric in metrics:
-                        curr[f'{tool}-{metric}'].append(float(row[c]))
+                        # Convert MB to GB if it's memory data
+                        curr[f'{tool}-{metric}'].append(float(row[c]) / (1 if c % 2 == 1 else 1024))
                         c += 1
     except EnvironmentError:
         print(f'No {lang}.csv file found, skipping to the next')
@@ -82,50 +83,77 @@ def filter_time(lang, loc, subject):
     return np.delete(loc, indices), np.delete(subject, indices)
 
 
+def filter_memory(lang, loc, subject):
+    pass
+
+
 trendx = np.array([0, 5*10**6])
 
 
 def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
     plt.figure(num=f'{lang}-{metric}', dpi=300)
     plt.xlabel('LoC')
-    plt.ylabel('Completion Time (s)')
+
     if lang == 'java' or lang == 'cpp':
         plt.xlim([0, 4.5*10**6])
     else:
         plt.xlim([0, 1.1*10**6])
-    plt.ylim([0, 450])
+
+    if metric == 'time':
+        plt.ylabel('Completion Time (s)')
+        plt.ylim([0, 450])
+    else:
+        plt.ylabel('Peak Memory Usage (GB)')
+        plt.ylim([0, 6])
+
     plt.gca().xaxis.set_major_formatter(xlabel_formatter)
+
     # ENRE
     e = plt.scatter(loc, enre)
-    _loc, _enre = filter_time(lang, loc, enre)
-    res = sm.OLS(_enre, _loc).fit()
-    plt.plot(trendx, res.params[0] * trendx)
+    if metric == 'time':
+        _loc, _enre = filter_time(lang, loc, enre)
+        res = sm.OLS(_enre, _loc).fit()
+        plt.plot(trendx, res.params[0] * trendx)
+    else:
+        pass
+
     # Depends
     d = plt.scatter(loc, depends)
-    _loc, _depends = filter_time(lang, loc, depends)
-    res = sm.OLS(_depends, _loc).fit()
-    plt.plot(trendx, res.params[0] * trendx)
+    if metric == 'time':
+        _loc, _depends = filter_time(lang, loc, depends)
+        res = sm.OLS(_depends, _loc).fit()
+        plt.plot(trendx, res.params[0] * trendx)
+    else:
+        pass
+
     # SourceTrail
     s = plt.scatter(loc, sourcetrail)
-    _loc, _sourcetrail = filter_time(lang, loc, sourcetrail)
-    res = sm.OLS(_sourcetrail, _loc).fit()
-    plt.plot(trendx, res.params[0] * trendx)
+    if metric == 'time':
+        _loc, _sourcetrail = filter_time(lang, loc, sourcetrail)
+        res = sm.OLS(_sourcetrail, _loc).fit()
+        plt.plot(trendx, res.params[0] * trendx)
+    else:
+        pass
+
     # Understand
     u = plt.scatter(loc, understand)
-    _loc, _understand = filter_time(lang, loc, understand)
-    res = sm.OLS(_understand, _loc).fit()
-    plt.plot(trendx, res.params[0] * trendx)
+    if metric == 'time':
+        _loc, _understand = filter_time(lang, loc, understand)
+        res = sm.OLS(_understand, _loc).fit()
+        plt.plot(trendx, res.params[0] * trendx)
+    else:
+        pass
 
-    # plt.title(f'{lang}-{metric}')
+    plt.title(f'{lang}-{metric}')
     plt.legend(handles=[e, d, s, u], labels=['ENRE', 'Depends', 'SourceTrail', 'Understand'], loc='upper right')
     plt.tight_layout()
-    # plt.show()
-    plt.savefig(f'G:\\我的云端硬盘\\ASE 2022\\{metric}-{lang}.png')
+    plt.show()
+    # plt.savefig(f'G:\\我的云端硬盘\\ASE 2022\\{metric}-{lang}.png')
 
 
 for lang in langs:
     curr = collection[lang]
-    for metric in ['time']:
+    for metric in ['memory']:
         draw(
             lang,
             metric,
