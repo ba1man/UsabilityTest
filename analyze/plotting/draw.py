@@ -1,7 +1,20 @@
+import argparse
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
+from scipy.optimize import curve_fit
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('mode', help='Specify the deploy mode')
+args = parser.parse_args()
+
+mode = args.mode
+try:
+    ['view', 'save'].index(mode)
+except:
+    raise ValueError(f'Invalid mode {mode}, only support view / save')
 
 
 langs = ['cpp', 'java', 'python']
@@ -59,12 +72,12 @@ plt.style.use('./my.mplstyle')
 
 def xlabel_formatter(x, pos):
     if x >= 10**6:
-        return '{:.0f}'.format(x / 10**6) + 'M'
+        return '{:.1f}'.format(x / 10**6) + 'M'
     elif x >= 10**3:
-        return '{:.0f}'.format(x / 10**3) + 'K'
+        return '{:.1f}'.format(x / 10**3) + 'K'
 
 
-def filter_time(lang, loc, subject):
+def filter_time(lang, loc, subject, tool=None):
     indices = []
     for index, value in enumerate(subject):
         # Remove NaN points
@@ -72,30 +85,53 @@ def filter_time(lang, loc, subject):
             indices.append(index)
         # Remove incorrect points
         if lang == 'java':
-            if value < loc[index] * 100 / (5*10**6) - 20:
-                indices.append(index)
-        elif lang == 'cpp':
             if value < loc[index] * 100 / (5 * 10 ** 6) - 20:
                 indices.append(index)
+        elif lang == 'cpp':
+            if tool != 'depends':
+                if value < loc[index] * 100 / (5 * 10 ** 6) - 20:
+                    indices.append(index)
+            else:
+                if value < 50 / (5*10**5) * loc[index]:
+                    indices.append(index)
         else:
-            if loc[index] > 10**4 and value < 4:
+            if value < 50 / (10**6-5*10**4) * (loc[index]-5*10*4):
                 indices.append(index)
     return np.delete(loc, indices), np.delete(subject, indices)
 
 
-def filter_memory(lang, loc, subject):
-    pass
+def filter_memory(lang, loc, subject, tool=None):
+    indices = []
+    for index, value in enumerate(subject):
+        # Remove NaN points
+        if np.isnan(value):
+            indices.append(index)
+        # Remove incorrect points
+        if lang == 'java':
+            pass
+        elif lang == 'cpp':
+            pass
+        else:
+            if tool == 'enre':
+                if value < 0.5 / (2 * 10 ** 5) * loc[index]:
+                    indices.append(index)
+    return np.delete(loc, indices), np.delete(subject, indices)
 
 
 trendx = np.array([0, 5*10**6])
+dotted = np.linspace(trendx[0], trendx[1], 1000)
+
+
+def power_func(fx, a, b, c):
+    return a * fx ** b + c
 
 
 def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
-    plt.figure(num=f'{lang}-{metric}', dpi=300)
+    plt.figure(num=f'{lang}-{metric}')
     plt.xlabel('LoC')
 
     if lang == 'java' or lang == 'cpp':
-        plt.xlim([0, 4.5*10**6])
+        plt.xlim([0, 2.25*10**6])
     else:
         plt.xlim([0, 1.1*10**6])
 
@@ -109,46 +145,61 @@ def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
     plt.gca().xaxis.set_major_formatter(xlabel_formatter)
 
     # ENRE
-    e = plt.scatter(loc, enre)
+    e = plt.scatter(loc, enre, linewidths=0.8, c='b')
     if metric == 'time':
         _loc, _enre = filter_time(lang, loc, enre)
         res = sm.OLS(_enre, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx)
+        plt.plot(trendx, res.params[0] * trendx, c='b')
+        print(f'R-squared value for ENRE in {lang}-{metric} is {res.rsquared}')
     else:
-        pass
+        _loc, _enre = filter_memory(lang, loc, enre, 'enre')
+        popt, pcov = curve_fit(power_func, _loc, _enre)
+        plt.plot(dotted, popt[0] * dotted ** popt[1] + popt[2], c='b')
 
     # Depends
-    d = plt.scatter(loc, depends)
+    d = plt.scatter(loc, depends, linewidths=0.8, c='g')
     if metric == 'time':
-        _loc, _depends = filter_time(lang, loc, depends)
+        _loc, _depends = filter_time(lang, loc, depends, 'depends')
         res = sm.OLS(_depends, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx)
+        plt.plot(trendx, res.params[0] * trendx, c='g')
+        print(f'R-squared value for Depends in {lang}-{metric} is {res.rsquared}')
     else:
-        pass
+        _loc, _depends = filter_memory(lang, loc, depends)
+        popt, pcov = curve_fit(power_func, _loc, _depends)
+        plt.plot(dotted, popt[0] * dotted ** popt[1] + popt[2], c='g')
 
     # SourceTrail
-    s = plt.scatter(loc, sourcetrail)
+    s = plt.scatter(loc, sourcetrail, linewidths=0.8, c='#888888')
     if metric == 'time':
         _loc, _sourcetrail = filter_time(lang, loc, sourcetrail)
         res = sm.OLS(_sourcetrail, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx)
+        plt.plot(trendx, res.params[0] * trendx, c='#888888')
+        print(f'R-squared value for SourceTrail in {lang}-{metric} is {res.rsquared}')
     else:
-        pass
+        _loc, _sourcetrail = filter_memory(lang, loc, sourcetrail)
+        popt, pcov = curve_fit(power_func, _loc, _sourcetrail)
+        plt.plot(dotted, popt[0] * dotted ** popt[1] + popt[2], c='#888888')
 
     # Understand
-    u = plt.scatter(loc, understand)
+    u = plt.scatter(loc, understand, linewidths=0.8, c='r')
     if metric == 'time':
         _loc, _understand = filter_time(lang, loc, understand)
         res = sm.OLS(_understand, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx)
+        plt.plot(trendx, res.params[0] * trendx, c='r')
+        print(f'R-squared value for Understand in {lang}-{metric} is {res.rsquared}')
     else:
-        pass
+        _loc, _understand = filter_memory(lang, loc, understand)
+        popt, pcov = curve_fit(power_func, _loc, _understand)
+        plt.plot(dotted, popt[0] * dotted ** popt[1] + popt[2], c='r')
 
-    plt.title(f'{lang}-{metric}')
+    if mode == 'view':
+        plt.title(f'{lang}-{metric}')
     plt.legend(handles=[e, d, s, u], labels=['ENRE', 'Depends', 'SourceTrail', 'Understand'], loc='upper right')
     plt.tight_layout()
-    plt.show()
-    # plt.savefig(f'G:\\我的云端硬盘\\ASE 2022\\{metric}-{lang}.png')
+    if mode == 'view':
+        plt.show()
+    else:
+        plt.savefig(f'G:\\我的云端硬盘\\ASE 2022\\{metric}-{lang}.png')
 
 
 for lang in langs:
