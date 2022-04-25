@@ -133,7 +133,7 @@ only = args.only.lower() if args.only is not None else ''
 try:
     ['clone', 'loc', 'enre', 'depends',
         'understand', 'sourcetrail', ''].index(only)
-except:
+except ValueError:
     raise ValueError(
         f'Invalid tool {only}, only support enre / depends / understand / sourcetrail / clone / loc')
 

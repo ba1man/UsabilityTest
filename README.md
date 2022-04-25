@@ -15,6 +15,8 @@ You need:
 - `Sourcetrail` installed and can be accessed via the environment path
   > Follow the guidance on [tools/#_INSTALL_THIS_sourcetrail/README.doc](./tools/%23_INSTALL_THIS_sourcetrail/README.doc) to install and operate.
 
+  > **WARNING** SourceTrail depends on Python **^3.8** to analyze python projects, if you don'y explicitly assign a python executable path while creating a project, then you would better make sure a Python 3.8 is accessable via the environment.
+
 - Allow git to use long file name:
 
   ```sh
