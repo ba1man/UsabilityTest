@@ -5,7 +5,6 @@ font.size : 16
 
 axes.labelsize : 18
 
-lines.markersize : 5
 lines.linewidth : 1.2
 
-scatter.marker : +
+scatter.marker : o

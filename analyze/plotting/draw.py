@@ -1,70 +1,12 @@
-import argparse
-import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy.optimize import curve_fit
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('mode', help='Specify the deploy mode')
-args = parser.parse_args()
-
-mode = args.mode
-try:
-    ['view', 'save'].index(mode)
-except:
-    raise ValueError(f'Invalid mode {mode}, only support view / save')
+from pre import init
 
 
-langs = ['cpp', 'java', 'python']
-tools = ['enre', 'depends', 'sourcetrail', 'understand']
-metrics = ['time', 'memory']
-
-collection = {}
-
-# Loading data
-print('Start loading data...')
-for lang in langs:
-    print(f'Loading {lang} data')
-    curr = collection[lang] = {}
-    try:
-        # Using 'sig' to suppress the BOM generated from Excel
-        with open(f'../data/{lang}.csv', 'r', encoding='utf-8-sig') as file:
-            data = csv.reader(file)
-            curr['loc'] = []
-            for tool in tools:
-                for metric in metrics:
-                    curr[f'{tool}-{metric}'] = []
-
-            for row in data:
-                curr['loc'].append(int(row[0]))
-                c = 1
-                for tool in tools:
-                    for metric in metrics:
-                        # Convert MB to GB if it's memory data
-                        curr[f'{tool}-{metric}'].append(float(row[c]) / (1 if c % 2 == 1 else 1024))
-                        c += 1
-    except EnvironmentError:
-        print(f'No {lang}.csv file found, skipping to the next')
-        continue
-    # Convert to numpy array
-    for key in curr.keys():
-        if key != 'loc':
-            curr[key] = np.array(curr[key])
-            # Convert 0, -1 or any error indicators to NaN
-            curr[key][curr[key] <= 0] = np.nan
-    # If an error indicator shows up as LoC, remove it and associating datas
-    indices = []
-    for index, value in enumerate(curr['loc']):
-        if value <= 0:
-            indices.append(index)
-    for key in curr.keys():
-        curr[key] = np.delete(curr[key], indices)
-
-
-# Filtering
-print('Start lang-relative filtering')
+collection, tags, mode, langs, tools, metrics = init()
 
 # Plotting
 print('Start plotting')
