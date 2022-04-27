@@ -37,10 +37,10 @@ def init():
 
     # Fixtures
     tools = {
-        'enre': ['ENRE', 'b'],
-        'depends': ['Depends', 'g'],
-        'sourcetrail': ['SourceTrail', '#888888'],
-        'understand': ['Understand', 'r'],
+        'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
+        'depends': ['Depends', '#34D90B', '#d0ffcf'],  # Green
+        'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6'],  # Yellow
+        'understand': ['Understand', '#D916AE', '#FCDCEE'],  # Purple
     }
     metrics = ['time', 'memory']
 
