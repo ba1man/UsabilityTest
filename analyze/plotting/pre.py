@@ -2,6 +2,10 @@ import argparse
 import csv
 import numpy as np
 
+name_for = {'cpp': 'C++',
+            'java': 'Java',
+            'python': 'Python'}
+
 
 def init():
     parser = argparse.ArgumentParser()
