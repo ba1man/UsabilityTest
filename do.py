@@ -131,11 +131,11 @@ else:
 
 only = args.only.lower() if args.only is not None else ''
 try:
-    ['clone', 'loc', 'enre', 'depends',
+    ['clone', 'loc', 'depends', 'enre',
         'understand', 'sourcetrail', ''].index(only)
 except ValueError:
     raise ValueError(
-        f'Invalid tool {only}, only support enre / depends / understand / sourcetrail / clone / loc')
+        f'Invalid tool {only}, only support depends / enre / understand / sourcetrail / clone / loc')
 
 # Feature set
 timeout = args.timeout  # None, or positive int
@@ -158,14 +158,14 @@ with open(f'{outfile_path}.pending', 'a+') as f:
     f.write(
         'project_name'
         + ',LoC'
-        + ',ENRE-time'
-        + ',ENRE-memory'
         + ',Depends-time'
         + ',Depends-memory'
-        + ',Understand-time'
-        + ',Understand-memory'
+        + ',ENRE-time'
+        + ',ENRE-memory'
         + ',SourceTrail-time'
         + ',SourceTrail-memory'
+        + ',Understand-time'
+        + ',Understand-memory'
         + '\n')
 
 project_clone_url_list = dict()
@@ -505,14 +505,14 @@ for project_name in project_clone_url_list.keys():
         f.write(
             f'{project_name}'
             + f',{records["LoC"]}'
-            + f',{records["ENRE-time"]}'
-            + f',{records["ENRE-memory"]}'
             + f',{records["Depends-time"]}'
             + f',{records["Depends-memory"]}'
-            + f',{records["Understand-time"]}'
-            + f',{records["Understand-memory"]}'
+            + f',{records["ENRE-time"]}'
+            + f',{records["ENRE-memory"]}'
             + f',{records["SourceTrail-time"]}'
             + f',{records["SourceTrail-memory"]}'
+            + f',{records["Understand-time"]}'
+            + f',{records["Understand-memory"]}'
             + '\n')
 
 try:

@@ -41,8 +41,8 @@ def init():
 
     # Fixtures
     tools = {
-        'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
         'depends': ['Depends', '#34D90B', '#d0ffcf'],  # Green
+        'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
         'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6'],  # Yellow
         'understand': ['Understand', '#D916AE', '#FCDCEE'],  # Purple
     }
