@@ -1,9 +1,15 @@
+import math
+from functools import reduce
+
 from colour import Color
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from matplotlib.collections import LineCollection
 import matplotlib.patheffects as path_effects
+from shapely.geometry import LineString, Point
+import descartes
+
 
 from pre import init
 
@@ -16,6 +22,9 @@ def draw(lang, original_data):
     fig, ax = plt.subplots(num=f'{lang}', tight_layout=True)
     plt.xlabel('Completion Time (s)')
     plt.ylabel('Peak Memory Usage (GB)')
+
+    # if lang == 'python':
+    #     ax.set_ylim([0, 3])
 
     # Universal pruning, remove the project's data for all
     # if one tool's is bad
@@ -33,36 +42,54 @@ def draw(lang, original_data):
     def draw_tool(loc, time, memory, color):
         def size_mapping():
             maximum = max(loc)
-            # Map loc to point size between (2-12)^2
-            return list(map(lambda i: i / maximum * 140 + 4, loc))
+            # Map loc to point size between (2-14)^2
+            return list(map(lambda i: i / maximum * 192 + 4, loc))
 
         s = size_mapping()
         legend = plt.scatter(
             time,
             memory,
+            marker='+',
             s=s,
             linewidths=0.8,
             color=color,
-            alpha=0.6,
+            # alpha=0.6,
             zorder=50,
         )
         return legend
 
-    def draw_trend(loc, time, memory, color, bgcolor):
-        popt, _ = curve_fit(lambda x, a, b, c: a * x ** b + c, time, memory)
+    def draw_trend(tool, _loc, _time, _memory, color, bgcolor):
+        if lang != 'python':
+            milestone = 1 * 10 ** 6
+            milestone_str = '1MLoC'
+        else:
+            milestone = 2 * 10 ** 5
+            milestone_str = '200KLoC'
 
-        def farthest(x, y):
-            if len(x) != len(y):
-                raise ValueError('Point-pair must be the same size')
-            last_index = -1
-            last_val = 0
-            for i, v in enumerate(x):
-                # Use distance to origin for approximate,
-                # should use fancy geometry for more accurate result
-                if (val := x[i] ** 2 + y[i] ** 2) > last_val:
-                    last_index = i
-                    last_val = val
-            return last_index
+        # Manually remove obvious abnormal point
+        indices = []
+        if lang == 'java' and tool == 'sourcetrail':
+            # This does not affect the result too many
+            # indices.append(2)
+            # indices.append(25)
+            pass
+        elif lang == 'cpp' and tool == 'depends':
+            indices.append(14)
+            indices.append(55)
+        if len(indices) != 0:
+            loc = np.delete(_loc, indices)
+            time = np.delete(_time, indices)
+            memory = np.delete(_memory, indices)
+        else:
+            loc = _loc
+            time = _time
+            memory = _memory
+
+        popt, _ = curve_fit(lambda x, a, b, c: a * x ** b + c,
+                            time,
+                            memory,
+                            # A lower number will cause interation fails on python-st
+                            maxfev=2400 if lang == 'python' and tool == 'sourcetrail' else 800)
 
         def trend(x):
             return popt[0] * x ** popt[1] + popt[2]
@@ -74,8 +101,31 @@ def draw(lang, original_data):
         def d_trend(x):
             return popt[0] * popt[1] * x ** (popt[1] - 1)
 
-        index = farthest(time, memory)
-        x = np.linspace(0, time[index], 100)
+        def sampling():
+            pairs = []
+            for x in range(0, 1200, 1):
+                pairs.append((x, trend(x)))
+            pline = LineString(pairs)
+            projection = []
+            for index, value in enumerate(time):
+                opoint = Point(value, memory[index])
+                projection.append(pline.project(opoint))
+
+            # Calculate the LoC~CurveLength function
+            params, _ = curve_fit(lambda x, a, b: a * x + b, loc, projection)
+
+            def loc2len(x):
+                return params[0] * x + params[1]
+
+            # If maximum LoC is less than 1M / 200K, then extend the right-most
+            # coords to that milestones
+            suggested_eol = pline.interpolate(max(max(projection), loc2len(milestone)))
+
+            return suggested_eol, lambda loc: pline.interpolate(loc2len(loc)).x
+
+        eol, loc2x = sampling()
+        valid_x = max(0, trend_inverse(0))
+        x = np.linspace(valid_x, eol.x, 100)
         y = trend(x)
         vwidth = 4 + x[:-1] / max(x) * 16
         points = np.array([x, y]).T.reshape(-1, 1, 2)
@@ -85,46 +135,45 @@ def draw(lang, original_data):
                             color=bgcolor,
                             path_effects=[path_effects.Stroke(capstyle="round")])
         ax.add_collection(lc)
-        return trend, trend_inverse, d_trend
 
-    def draw_loc(loc, time, func):
-        # Milestone (LoC) is deeply relevant to language
-        if lang == 'cpp':
-            milestone = 1 * 10 ** 6
-            milestone_str = '1 MLoC'
-        if lang == 'java':
-            milestone = 8 * 10 ** 5
-            milestone_str = '800 KLoC'
+        # Draw milestone
+        mx = loc2x(milestone)
+        my = trend(mx)
+        plt.plot(mx,
+                 my,
+                 'x',
+                 ms=12,
+                 mew=2,
+                 c='#202020',
+                 zorder=99)
+        # Case-by-case place the text label
+        offsetx = 20
+        offsety = -0.45
+        if lang == 'java' and tool == 'sourcetrail':
+            offsetx = -75
+        elif lang == 'cpp':
+            offsetx = 12
+            offsety = -0.45
         elif lang == 'python':
-            milestone = 2 * 10 ** 5
-            milestone_str = '200 KLoC'
+            offsety = -0.14
+            if tool == 'sourcetrail':
+                offsetx = -110
+            else:
+                offsetx = 15
+        plt.text(mx + offsetx,
+                 my + offsety,
+                 milestone_str,
+                 size=10,
+                 zorder=100)
 
-        temp = np.concatenate((loc, time)).reshape(2, len(loc)).T
-        # Sort by LoC ascending
-        temp = temp[temp[:, 0].argsort()]
-        # Find the first item whose loc exceeds 1m
-        first = -1
-        for i, v in np.ndenumerate(temp[:, 0]):
-            if v > milestone:
-                first = i
-                break
-        if first == -1:
-            print(f'Can not find a sample with LoC greater than {milestone_str}')
-        else:
-            x = temp[first, 1]
-            y = func(temp[first, 1])
-            plt.plot(x,
-                     y,
-                     'x',
-                     ms=12,
-                     mew=2,
-                     c='#202020',
-                     zorder=99)
-            plt.text(x + 6,
-                     y - 0.3,
-                     milestone_str,
-                     size=10,
-                     zorder=100)
+        # Calculate R2
+        residuals = memory - trend(time)
+        ss_res = np.sum(residuals ** 2)
+        ss_tot = np.sum((memory - np.mean(memory)) ** 2)
+        r_squared = 1 - (ss_res / ss_tot)
+        print(f'{lang}-{tool}-r2: {r_squared}')
+
+        return trend, trend_inverse, d_trend
 
     legends = []
     for tool in tools:
@@ -151,20 +200,21 @@ def draw(lang, original_data):
                       memory,
                       Color(fixture[1]).rgb)
         try:
-            t, _, __ = draw_trend(loc,
-                                  time,
-                                  memory,
-                                  Color(fixture[1]).rgb,
-                                  Color(fixture[2]).rgb)
+            pass
         except RuntimeError:
             print(f'Failed to calculate the trend for {fixture[0]}')
-        else:
-            draw_loc(loc,
-                     time,
-                     t)
+        t, _, __ = draw_trend(tool,
+                              loc,
+                              time,
+                              memory,
+                              Color(fixture[1]).rgb,
+                              Color(fixture[2]).rgb)
         legends.append(l)
 
-    ax.legend(handles=legends, labels=map(lambda t: tools[t][0], tools), loc='upper right')
+    ax.legend(handles=legends,
+              labels=map(lambda t: tools[t][0], tools),
+              prop={'size': 14},
+              loc='upper right' if lang != 'python' else 'lower right')
     if mode == 'view':
         ax.title.set_text(f'performance-{lang}')
         fig.show()

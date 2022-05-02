@@ -46,6 +46,12 @@ def init():
         'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6'],  # Yellow
         'understand': ['Understand', '#D916AE', '#FCDCEE'],  # Purple
     }
+    # tools = {
+    #     'depends': ['Depends', '#249908', '#d0ffcf'],  # Green
+    #     'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
+    #     'sourcetrail': ['SourceTrail', '#9C6914', '#FFF2D6'],  # Yellow
+    #     'understand': ['Understand', '#990F7B', '#FCDCEE'],  # Purple
+    # }
     metrics = ['time', 'memory']
 
     collection = {}
