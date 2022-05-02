@@ -23,8 +23,15 @@ def draw(lang, original_data):
     plt.xlabel('Completion Time (s)')
     plt.ylabel('Peak Memory Usage (GB)')
 
-    # if lang == 'python':
-    #     ax.set_ylim([0, 3])
+    if lang == 'cpp':
+        ax.set_xlim([0, 750])
+        ax.set_ylim([0, 7])
+    elif lang == 'java':
+        ax.set_xlim([0, 1250])
+        ax.set_ylim([0, 7])
+    elif lang == 'python':
+        ax.set_xlim([0, 1250])
+        ax.set_ylim([0, 2.5])
 
     # Universal pruning, remove the project's data for all
     # if one tool's is bad
@@ -125,6 +132,8 @@ def draw(lang, original_data):
 
         eol, loc2x = sampling()
         valid_x = max(0, trend_inverse(0))
+        if lang == 'python' and tool == 'sourcetrail':
+            valid_x = 25
         x = np.linspace(valid_x, eol.x, 100)
         y = trend(x)
         vwidth = 4 + x[:-1] / max(x) * 16
@@ -155,7 +164,7 @@ def draw(lang, original_data):
             offsetx = 12
             offsety = -0.45
         elif lang == 'python':
-            offsety = -0.14
+            offsety = -0.16
             if tool == 'sourcetrail':
                 offsetx = -110
             else:
