@@ -336,7 +336,7 @@ for project_name in project_clone_url_list.keys():
     if only == 'depends' or only == '':
         # Run Depends
         print('starting Depends')
-        cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name}'
+        cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name} -g var'
 
         time_start = time.time()
         proc = subprocess.Popen(
