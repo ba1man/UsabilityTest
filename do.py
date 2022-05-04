@@ -401,7 +401,9 @@ for project_name in project_clone_url_list.keys():
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            cwd='./out/understand')
+            # `upath` has already set output path to the correct location hence there is no need to set the cwd
+            # cwd='./out/understand'
+        )
 
         killed = False
         if timeout is not None:
