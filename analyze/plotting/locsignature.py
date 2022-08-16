@@ -8,7 +8,7 @@ collection, tags, mode, langs, tools, metrics = init()
 
 plt.style.use('./my.mplstyle')
 
-fig, axs = plt.subplots(3, 1, figsize=(6, 2.8))
+fig, axs = plt.subplots(3, 1, figsize=(8.5, 3))
 plt.subplots_adjust(left=0.145, right=0.98, top=0.98, bottom=0.22)
 magics = [0.84, 0.58, 0.31]
 for index, lang in enumerate(langs):

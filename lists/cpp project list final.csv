@@ -1,120 +1,120 @@
-project name,stars,description,github url,clone url
-microsoft/terminal,82230,"The new Windows Terminal and the original Windows console host, all in the same place!",https://github.com/microsoft/terminal,https://github.com/microsoft/terminal.git
-bitcoin/bitcoin,63264,Bitcoin Core integration/staging tree,https://github.com/bitcoin/bitcoin,https://github.com/bitcoin/bitcoin.git
-opencv/opencv,60849,Open Source Computer Vision Library,https://github.com/opencv/opencv,https://github.com/opencv/opencv.git
-apple/swift,59229,The Swift Programming Language,https://github.com/apple/swift,https://github.com/apple/swift.git
-pytorch/pytorch,55233,Tensors and Dynamic neural networks in Python with strong GPU acceleration,https://github.com/pytorch/pytorch,https://github.com/pytorch/pytorch.git
-godotengine/godot,48074,Godot Engine – Multi-platform 2D and 3D game engine,https://github.com/godotengine/godot,https://github.com/godotengine/godot.git
-tesseract-ocr/tesseract,44706,Tesseract Open Source OCR Engine (main repository),https://github.com/tesseract-ocr/tesseract,https://github.com/tesseract-ocr/tesseract.git
-x64dbg/x64dbg,38356,An open-source x64/x32 debugger for windows.,https://github.com/x64dbg/x64dbg,https://github.com/x64dbg/x64dbg.git
-BVLC/caffe,32389,Caffe: a fast open framework for deep learning.,https://github.com/BVLC/caffe,https://github.com/BVLC/caffe.git
-nlohmann/json,29536,JSON for Modern C++,https://github.com/nlohmann/json,https://github.com/nlohmann/json.git
-topjohnwu/Magisk,25211,The Magic Mask for Android,https://github.com/topjohnwu/Magisk,https://github.com/topjohnwu/Magisk.git
-microsoft/calculator,24096,Windows Calculator: A simple yet powerful calculator that ships with Windows,https://github.com/microsoft/calculator,https://github.com/microsoft/calculator.git
-CMU-Perceptual-Computing-Lab/openpose,23877,"OpenPose: Real-time multi-person keypoint detection library for body, face, hands, and foot estimation",https://github.com/CMU-Perceptual-Computing-Lab/openpose,https://github.com/CMU-Perceptual-Computing-Lab/openpose.git
-ClickHouse/ClickHouse,23088,ClickHouse® is a free analytics DBMS for big data,https://github.com/ClickHouse/ClickHouse,https://github.com/ClickHouse/ClickHouse.git
-facebook/folly,21675,An open-source C++ library developed and used at Facebook.,https://github.com/facebook/folly,https://github.com/facebook/folly.git
-mongodb/mongo,21441,The MongoDB Database,https://github.com/mongodb/mongo,https://github.com/mongodb/mongo.git
-Light-City/CPlusPlusThings,20090,C++那些事,https://github.com/Light-City/CPlusPlusThings,https://github.com/Light-City/CPlusPlusThings.git
-uglide/RedisDesktopManager,20018,:wrench: Cross-platform Developer GUI for Redis,https://github.com/uglide/RedisDesktopManager,https://github.com/uglide/RedisDesktopManager.git
-yuzu-emu/yuzu,19771,Nintendo Switch Emulator,https://github.com/yuzu-emu/yuzu,https://github.com/yuzu-emu/yuzu.git
-SerenityOS/serenity,19116,The Serenity Operating System 🐞,https://github.com/SerenityOS/serenity,https://github.com/SerenityOS/serenity.git
-TheAlgorithms/C-Plus-Plus,18960,"Collection of various algorithms in mathematics, machine learning, computer science and physics implemented in C++ for educational purposes.",https://github.com/TheAlgorithms/C-Plus-Plus,https://github.com/TheAlgorithms/C-Plus-Plus.git
-osquery/osquery,18795,"SQL powered operating system instrumentation, monitoring, and analytics.",https://github.com/osquery/osquery,https://github.com/osquery/osquery.git
-fish-shell/fish-shell,18705,The user-friendly command line shell.,https://github.com/fish-shell/fish-shell,https://github.com/fish-shell/fish-shell.git
-taichi-dev/taichi,18658,Productive & portable high-performance programming in Python.,https://github.com/taichi-dev/taichi,https://github.com/taichi-dev/taichi.git
-telegramdesktop/tdesktop,18523,Telegram Desktop messaging app,https://github.com/telegramdesktop/tdesktop,https://github.com/telegramdesktop/tdesktop.git
-alibaba/weex,17859,A framework for building Mobile cross-platform UI,https://github.com/alibaba/weex,https://github.com/alibaba/weex.git
-ossrs/srs,17755,"SRS is a simple, high efficiency and realtime video server, supports RTMP, WebRTC, HLS, HTTP-FLV and SRT.",https://github.com/ossrs/srs,https://github.com/ossrs/srs.git
-zhongyang219/TrafficMonitor,17184,这是一个用于显示当前网速、CPU及内存利用率的桌面悬浮窗软件，并支持任务栏显示，支持更换皮肤。,https://github.com/zhongyang219/TrafficMonitor,https://github.com/zhongyang219/TrafficMonitor.git
-microsoft/CNTK,17146,"Microsoft Cognitive Toolkit (CNTK), an open source deep-learning toolkit",https://github.com/microsoft/CNTK,https://github.com/microsoft/CNTK.git
-flameshot-org/flameshot,17039,Powerful yet simple to use screenshot software :desktop_computer: :camera_flash:,https://github.com/flameshot-org/flameshot,https://github.com/flameshot-org/flameshot.git
-aseprite/aseprite,17024,"Animated sprite editor & pixel art tool (Windows, macOS, Linux)",https://github.com/aseprite/aseprite,https://github.com/aseprite/aseprite.git
-ValveSoftware/Proton,16823,Compatibility tool for Steam Play based on Wine and additional components,https://github.com/ValveSoftware/Proton,https://github.com/ValveSoftware/Proton.git
-microsoft/winget-cli,16680,Windows Package Manager CLI (aka winget),https://github.com/microsoft/winget-cli,https://github.com/microsoft/winget-cli.git
-facebookresearch/faiss,16663,A library for efficient similarity search and clustering of dense vectors.,https://github.com/facebookresearch/faiss,https://github.com/facebookresearch/faiss.git
-sqlitebrowser/sqlitebrowser,16304,"Official home of the DB Browser for SQLite (DB4S) project. Previously known as ""SQLite Database Browser"" and ""Database Browser for SQLite"". Website at: ",https://github.com/sqlitebrowser/sqlitebrowser,https://github.com/sqlitebrowser/sqlitebrowser.git
-Tencent/mars,16090,Mars is a cross-platform network component  developed by WeChat.,https://github.com/Tencent/mars,https://github.com/Tencent/mars.git
-electronicarts/CnC_Remastered_Collection,16039,,https://github.com/electronicarts/CnC_Remastered_Collection,https://github.com/electronicarts/CnC_Remastered_Collection.git
-cocos2d/cocos2d-x,16030,"Cocos2d-x is a suite of open-source, cross-platform, game-development tools used by millions of developers all over the world.",https://github.com/cocos2d/cocos2d-x,https://github.com/cocos2d/cocos2d-x.git
-simdjson/simdjson,15446,Parsing gigabytes of JSON per second ,https://github.com/simdjson/simdjson,https://github.com/simdjson/simdjson.git
-qbittorrent/qBittorrent,15298,qBittorrent BitTorrent client,https://github.com/qbittorrent/qBittorrent,https://github.com/qbittorrent/qBittorrent.git
-facebook/yoga,15112,Yoga is a cross-platform layout engine which implements Flexbox. Follow https://twitter.com/yogalayout for updates.,https://github.com/facebook/yoga,https://github.com/facebook/yoga.git
-catchorg/Catch2,14757,"A modern, C++-native, test framework for unit-tests, TDD and BDD - using C++14, C++17 and later (C++11 support is in v2.x branch, and C++03 on the Catch1.x branch)",https://github.com/catchorg/Catch2,https://github.com/catchorg/Catch2.git
-microsoft/react-native-windows,14655,A framework for building native Windows apps with React.,https://github.com/microsoft/react-native-windows,https://github.com/microsoft/react-native-windows.git
-pqrs-org/Karabiner-Elements,14415,Karabiner-Elements is a powerful utility for keyboard customization on macOS Sierra (10.12) or later.,https://github.com/pqrs-org/Karabiner-Elements,https://github.com/pqrs-org/Karabiner-Elements.git
-Tencent/ncnn,14241,ncnn is a high-performance neural network inference framework optimized for the mobile platform,https://github.com/Tencent/ncnn,https://github.com/Tencent/ncnn.git
-apache/incubator-weex,13960,Apache Weex (Incubating),https://github.com/apache/incubator-weex,https://github.com/apache/incubator-weex.git
-esp8266/Arduino,13936,ESP8266 core for Arduino,https://github.com/esp8266/Arduino,https://github.com/esp8266/Arduino.git
-dogecoin/dogecoin,13891,very currency,https://github.com/dogecoin/dogecoin,https://github.com/dogecoin/dogecoin.git
-google/filament,13785,"Filament is a real-time physically based rendering engine for Android, iOS, Windows, Linux, macOS, and WebGL2",https://github.com/google/filament,https://github.com/google/filament.git
-xbmc/xbmc,13651,"Kodi is an award-winning free and open source home theater/media center software and entertainment hub for digital media. With its beautiful interface and powerful skinning engine, it's available for Android, BSD, Linux, macOS, iOS and Windows.",https://github.com/xbmc/xbmc,https://github.com/xbmc/xbmc.git
-microsoft/LightGBM,13658,"A fast, distributed, high performance gradient boosting (GBT, GBDT, GBRT, GBM or MART) framework based on decision tree algorithms, used for ranking, classification and many other machine learning tasks.",https://github.com/microsoft/LightGBM,https://github.com/microsoft/LightGBM.git
-Qv2ray/Qv2ray,13424,:star: Linux / Windows / macOS 跨平台 V2Ray 客户端 | 支持 VMess / VLESS / SSR / Trojan / Trojan-Go / NaiveProxy / HTTP / HTTPS / SOCKS5 | 使用 C++ / Qt 开发 | 可拓展插件式设计 :star:,https://github.com/Qv2ray/Qv2ray,https://github.com/Qv2ray/Qv2ray.git
-apache/incubator-brpc,13036,"Industrial-grade RPC framework used throughout Baidu, with 1,000,000+ instances and thousands kinds of services. ""brpc"" means ""better RPC"".",https://github.com/apache/incubator-brpc,https://github.com/apache/incubator-brpc.git
-OpenGenus/cosmos,13005,Hacktoberfest 2021 | World's largest Contributor driven code dataset | Algorithms that run our universe | Your personal library of every algorithm and data structure code that you will ever encounter |,https://github.com/OpenGenus/cosmos,https://github.com/OpenGenus/cosmos.git
-microsoft/AirSim,12940,"Open source simulator for autonomous vehicles built on Unreal Engine / Unity, from Microsoft AI & Research",https://github.com/microsoft/AirSim,https://github.com/microsoft/AirSim.git
-MarlinFirmware/Marlin,12872,Marlin is an optimized firmware for RepRap 3D printers based on the Arduino platform. | Many commercial 3D printers come with Marlin installed. Check with your vendor if you need source code for your specific machine.,https://github.com/MarlinFirmware/Marlin,https://github.com/MarlinFirmware/Marlin.git
-keepassxreboot/keepassxc,12661,KeePassXC is a cross-platform community-driven port of the Windows application “Keepass Password Safe”.,https://github.com/keepassxreboot/keepassxc,https://github.com/keepassxreboot/keepassxc.git
-CoatiSoftware/Sourcetrail,12572,Sourcetrail - free and open-source interactive source explorer,https://github.com/CoatiSoftware/Sourcetrail,https://github.com/CoatiSoftware/Sourcetrail.git
-WerWolv/ImHex,12521,"🔍 A Hex Editor for Reverse Engineers, Programmers and people who value their retinas when working at 3 AM.",https://github.com/WerWolv/ImHex,https://github.com/WerWolv/ImHex.git
-arangodb/arangodb,12212,"🥑 ArangoDB is a native multi-model database with flexible data models for documents, graphs, and key-values. Build high performance applications using a convenient SQL-like query language or JavaScript extensions.",https://github.com/arangodb/arangodb,https://github.com/arangodb/arangodb.git
-Tencent/rapidjson,11914,A fast JSON parser/generator for C++ with both SAX/DOM style API,https://github.com/Tencent/rapidjson,https://github.com/Tencent/rapidjson.git
-EOSIO/eos,11341,An open source smart contract platform ,https://github.com/EOSIO/eos,https://github.com/EOSIO/eos.git
-bkaradzic/bgfx,11293,"Cross-platform, graphics API agnostic, ""Bring Your Own Engine/Framework"" style rendering library.",https://github.com/bkaradzic/bgfx,https://github.com/bkaradzic/bgfx.git
-apple/foundationdb,11210,"FoundationDB - the open source, distributed, transactional key-value store",https://github.com/apple/foundationdb,https://github.com/apple/foundationdb.git
-rizinorg/cutter,11173,Free and Open Source Reverse Engineering Platform powered by rizin,https://github.com/rizinorg/cutter,https://github.com/rizinorg/cutter.git
-kyleneideck/BackgroundMusic,11226,"Background Music, a macOS audio utility: automatically pause your music, set individual apps' volumes and record system audio.",https://github.com/kyleneideck/BackgroundMusic,https://github.com/kyleneideck/BackgroundMusic.git
-FreeCAD/FreeCAD,11092,"This is the official source code of FreeCAD, a free and opensource multiplatform 3D parametric modeler. Issues are managed on our own bug tracker at https://www.freecadweb.org/tracker",https://github.com/FreeCAD/FreeCAD,https://github.com/FreeCAD/FreeCAD.git
-davisking/dlib,11059,A toolkit for making real world machine learning and data analysis applications in C++,https://github.com/davisking/dlib,https://github.com/davisking/dlib.git
-RPCS3/rpcs3,10942,PS3 emulator/debugger,https://github.com/RPCS3/rpcs3,https://github.com/RPCS3/rpcs3.git
-facebook/watchman,10793,"Watches files and records, or triggers actions, when they change. ",https://github.com/facebook/watchman,https://github.com/facebook/watchman.git
-apple/turicreate,10658,Turi Create simplifies the development of custom machine learning models.,https://github.com/apple/turicreate,https://github.com/apple/turicreate.git
-OpenRCT2/OpenRCT2,10381,An open source re-implementation of RollerCoaster Tycoon 2 🎢,https://github.com/OpenRCT2/OpenRCT2,https://github.com/OpenRCT2/OpenRCT2.git
-openalpr/openalpr,10391,Automatic License Plate Recognition library,https://github.com/openalpr/openalpr,https://github.com/openalpr/openalpr.git
-polybar/polybar,10196,A fast and easy-to-use status bar,https://github.com/polybar/polybar,https://github.com/polybar/polybar.git
-Tencent/matrix,9741,"Matrix is a plugin style, non-invasive APM system developed by WeChat.",https://github.com/Tencent/matrix,https://github.com/Tencent/matrix.git
-apache/arrow,9343,Apache Arrow is a multi-language toolbox for accelerated data interchange and in-memory processing,https://github.com/apache/arrow,https://github.com/apache/arrow.git
-typesense/typesense,9529,"Open Source alternative to Algolia and an Easier-to-Use alternative to ElasticSearch ⚡ 🔍 ✨ Fast, typo tolerant, in-memory fuzzy Search Engine for building delightful search experiences",https://github.com/typesense/typesense,https://github.com/typesense/typesense.git
-TranslucentTB/TranslucentTB,9268,A lightweight utility that makes the Windows taskbar translucent/transparent.,https://github.com/TranslucentTB/TranslucentTB,https://github.com/TranslucentTB/TranslucentTB.git
-bulletphysics/bullet3,9146,"Bullet Physics SDK: real-time collision detection and multi-physics simulation for VR, games, visual effects, robotics, machine learning etc.",https://github.com/bulletphysics/bullet3,https://github.com/bulletphysics/bullet3.git
-Atmosphere-NX/Atmosphere,9056,Atmosphère is a work-in-progress customized firmware for the Nintendo Switch.,https://github.com/Atmosphere-NX/Atmosphere,https://github.com/Atmosphere-NX/Atmosphere.git
-apache/thrift,8998,Apache Thrift,https://github.com/apache/thrift,https://github.com/apache/thrift.git
-sonic-pi-net/sonic-pi,8986,Code. Music. Live.,https://github.com/sonic-pi-net/sonic-pi,https://github.com/sonic-pi-net/sonic-pi.git
-microsoft/napajs,8958,Napa.js: a multi-threaded JavaScript runtime,https://github.com/microsoft/napajs,https://github.com/microsoft/napajs.git
-Studio3T/robomongo,8886,Native cross-platform MongoDB management tool,https://github.com/Studio3T/robomongo,https://github.com/Studio3T/robomongo.git
-symless/synergy-core,8859,"Open source core of Synergy, the keyboard and mouse sharing tool",https://github.com/symless/synergy-core,https://github.com/symless/synergy-core.git
-openframeworks/openFrameworks,8818,openFrameworks is a community-developed cross platform toolkit for creative coding in C++.,https://github.com/openframeworks/openFrameworks,https://github.com/openframeworks/openFrameworks.git
-nasa/fprime,8807,F' - A flight software and embedded systems framework,https://github.com/nasa/fprime,https://github.com/nasa/fprime.git
-DayBreak-u/chineseocr_lite,8776,"超轻量级中文ocr，支持竖排文字识别, 支持ncnn、mnn、tnn推理 ( dbnet(1.8M) + crnn(2.5M) + anglenet(378KB)) 总模型仅4.7M ",https://github.com/DayBreak-u/chineseocr_lite,https://github.com/DayBreak-u/chineseocr_lite.git
-mapeditor/tiled,8664,Flexible level editor,https://github.com/mapeditor/tiled,https://github.com/mapeditor/tiled.git
-Aircoookie/WLED,8631,Control WS2812B and many more types of digital RGB LEDs with an ESP8266 or ESP32 over WiFi!,https://github.com/Aircoookie/WLED,https://github.com/Aircoookie/WLED.git
-zerotier/ZeroTierOne,8518,A Smart Ethernet Switch for Earth,https://github.com/zerotier/ZeroTierOne,https://github.com/zerotier/ZeroTierOne.git
-dolphin-emu/dolphin,8358,"Dolphin is a GameCube / Wii emulator, allowing you to play games for these two platforms on PC with improvements.",https://github.com/dolphin-emu/dolphin,https://github.com/dolphin-emu/dolphin.git
-diasurgical/devilution,8295,Diablo devolved - magic behind the 1996 computer game,https://github.com/diasurgical/devilution,https://github.com/diasurgical/devilution.git
-sass/node-sass,8102,:rainbow: Node.js bindings to libsass,https://github.com/sass/node-sass,https://github.com/sass/node-sass.git
-doitsujin/dxvk,7714,"Vulkan-based implementation of D3D9, D3D10 and D3D11 for Linux / Wine",https://github.com/doitsujin/dxvk,https://github.com/doitsujin/dxvk.git
-assimp/assimp,7694,The official Open-Asset-Importer-Library Repository. Loads 40+ 3D-file-formats into one unified and clean data structure. ,https://github.com/assimp/assimp,https://github.com/assimp/assimp.git
-zeromq/libzmq,7684,"ZeroMQ core engine in C++, implements ZMTP/3.1",https://github.com/zeromq/libzmq,https://github.com/zeromq/libzmq.git
-Maximus5/ConEmu,7660,"Customizable Windows terminal with tabs, splits, quake-style, hotkeys and more",https://github.com/Maximus5/ConEmu,https://github.com/Maximus5/ConEmu.git
-SFML/SFML,7596,Simple and Fast Multimedia Library,https://github.com/SFML/SFML,https://github.com/SFML/SFML.git
-nodegui/nodegui,7587,A library for building cross-platform native desktop applications with Node.js and CSS  🚀.  React NodeGui : https://react.nodegui.org and Vue NodeGui: https://vue.nodegui.org,https://github.com/nodegui/nodegui,https://github.com/nodegui/nodegui.git
-carla-simulator/carla,7581,Open-source simulator for autonomous driving research.,https://github.com/carla-simulator/carla,https://github.com/carla-simulator/carla.git
-hoffstadt/DearPyGui,7562,Dear PyGui: A fast and powerful Graphical User Interface Toolkit for Python with minimal dependencies,https://github.com/hoffstadt/DearPyGui,https://github.com/hoffstadt/DearPyGui.git
-anbox/anbox,7552,Anbox is a container-based approach to boot a full Android system on a regular GNU/Linux system ,https://github.com/anbox/anbox,https://github.com/anbox/anbox.git
-facebook/proxygen,7463,A collection of C++ HTTP libraries including an easy to use HTTP server.,https://github.com/facebook/proxygen,https://github.com/facebook/proxygen.git
-opencv/opencv_contrib,7366,Repository for OpenCV's extra modules,https://github.com/opencv/opencv_contrib,https://github.com/opencv/opencv_contrib.git
-vesoft-inc/nebula,7317,"  A distributed, fast open-source graph database featuring horizontal scalability and high availability",https://github.com/vesoft-inc/nebula,https://github.com/vesoft-inc/nebula.git
-Z3Prover/z3,7295,The Z3 Theorem Prover,https://github.com/Z3Prover/z3,https://github.com/Z3Prover/z3.git
-citra-emu/citra,7291,A Nintendo 3DS Emulator,https://github.com/citra-emu/citra,https://github.com/citra-emu/citra.git
-TrinityCore/TrinityCore,7274,"TrinityCore Open Source MMO Framework (master = 9.2.0.43114, 3.3.5 = 3.3.5a.12340)",https://github.com/TrinityCore/TrinityCore,https://github.com/TrinityCore/TrinityCore.git
-PointCloudLibrary/pcl,7271,Point Cloud Library (PCL),https://github.com/PointCloudLibrary/pcl,https://github.com/PointCloudLibrary/pcl.git
-ArduPilot/ardupilot,7193,"ArduPlane, ArduCopter, ArduRover, ArduSub source",https://github.com/ArduPilot/ardupilot,https://github.com/ArduPilot/ardupilot.git
-facebook/hermes,7181,A JavaScript engine optimized for running React Native.,https://github.com/facebook/hermes,https://github.com/facebook/hermes.git
-hrydgard/ppsspp,7141,"A PSP emulator for Android, Windows, Mac and Linux, written in C++. Want to contribute? Join us on Discord at https://discord.gg/5NJB6dD or just send pull requests / issues. For discussion use the forums on ppsspp.org.",https://github.com/hrydgard/ppsspp,https://github.com/hrydgard/ppsspp.git
-JoeyDeVries/LearnOpenGL,7034,Code repository of all OpenGL chapters from the book and its accompanying website https://learnopengl.com,https://github.com/JoeyDeVries/LearnOpenGL,https://github.com/JoeyDeVries/LearnOpenGL.git
-tenacityteam/tenacity,6985,"Tenacity is an easy-to-use, privacy-friendly, FLOSS, cross-platform multi-track audio editor/recorder for Windows, macOS, Linux and other operating systems. Contributions welcome!",https://github.com/tenacityteam/tenacity,https://github.com/tenacityteam/tenacity.git
-minetest/minetest,6960,Minetest is an open source voxel game engine with easy modding and game creation,https://github.com/minetest/minetest,https://github.com/minetest/minetest.git
-musescore/MuseScore,6924,"MuseScore is an open source and free music notation software. For support, contribution, bug reports, visit MuseScore.org. Fork and make pull requests!",https://github.com/musescore/MuseScore,https://github.com/musescore/MuseScore.git
-Mooophy/Cpp-Primer,6915,C++ Primer 5 answers,https://github.com/Mooophy/Cpp-Primer,https://github.com/Mooophy/Cpp-Primer.git
-monero-project/monero,6809,"Monero: the secure, private, untraceable cryptocurrency",https://github.com/monero-project/monero,https://github.com/monero-project/monero.git
+project name,stars,github url,clone url
+microsoft/terminal,82230,https://github.com/microsoft/terminal,https://github.com/microsoft/terminal.git
+bitcoin/bitcoin,63264,https://github.com/bitcoin/bitcoin,https://github.com/bitcoin/bitcoin.git
+opencv/opencv,60849,https://github.com/opencv/opencv,https://github.com/opencv/opencv.git
+apple/swift,59229,https://github.com/apple/swift,https://github.com/apple/swift.git
+pytorch/pytorch,55233,https://github.com/pytorch/pytorch,https://github.com/pytorch/pytorch.git
+godotengine/godot,48074,https://github.com/godotengine/godot,https://github.com/godotengine/godot.git
+tesseract-ocr/tesseract,44706,https://github.com/tesseract-ocr/tesseract,https://github.com/tesseract-ocr/tesseract.git
+x64dbg/x64dbg,38356,https://github.com/x64dbg/x64dbg,https://github.com/x64dbg/x64dbg.git
+BVLC/caffe,32389,https://github.com/BVLC/caffe,https://github.com/BVLC/caffe.git
+nlohmann/json,29536,https://github.com/nlohmann/json,https://github.com/nlohmann/json.git
+topjohnwu/Magisk,25211,https://github.com/topjohnwu/Magisk,https://github.com/topjohnwu/Magisk.git
+microsoft/calculator,24096,https://github.com/microsoft/calculator,https://github.com/microsoft/calculator.git
+CMU-Perceptual-Computing-Lab/openpose,23877,https://github.com/CMU-Perceptual-Computing-Lab/openpose,https://github.com/CMU-Perceptual-Computing-Lab/openpose.git
+ClickHouse/ClickHouse,23088,https://github.com/ClickHouse/ClickHouse,https://github.com/ClickHouse/ClickHouse.git
+facebook/folly,21675,https://github.com/facebook/folly,https://github.com/facebook/folly.git
+mongodb/mongo,21441,https://github.com/mongodb/mongo,https://github.com/mongodb/mongo.git
+Light-City/CPlusPlusThings,20090,https://github.com/Light-City/CPlusPlusThings.git,
+uglide/RedisDesktopManager,20018,https://github.com/uglide/RedisDesktopManager,https://github.com/uglide/RedisDesktopManager.git
+yuzu-emu/yuzu,19771,https://github.com/yuzu-emu/yuzu,https://github.com/yuzu-emu/yuzu.git
+SerenityOS/serenity,19116,https://github.com/SerenityOS/serenity,https://github.com/SerenityOS/serenity.git
+TheAlgorithms/C-Plus-Plus,18960,https://github.com/TheAlgorithms/C-Plus-Plus,https://github.com/TheAlgorithms/C-Plus-Plus.git
+osquery/osquery,18795,https://github.com/osquery/osquery,https://github.com/osquery/osquery.git
+fish-shell/fish-shell,18705,https://github.com/fish-shell/fish-shell,https://github.com/fish-shell/fish-shell.git
+taichi-dev/taichi,18658,https://github.com/taichi-dev/taichi,https://github.com/taichi-dev/taichi.git
+telegramdesktop/tdesktop,18523,https://github.com/telegramdesktop/tdesktop,https://github.com/telegramdesktop/tdesktop.git
+alibaba/weex,17859,https://github.com/alibaba/weex,https://github.com/alibaba/weex.git
+ossrs/srs,17755,https://github.com/ossrs/srs,https://github.com/ossrs/srs.git
+zhongyang219/TrafficMonitor,17184,https://github.com/zhongyang219/TrafficMonitor.git,
+microsoft/CNTK,17146,https://github.com/microsoft/CNTK,https://github.com/microsoft/CNTK.git
+flameshot-org/flameshot,17039,https://github.com/flameshot-org/flameshot,https://github.com/flameshot-org/flameshot.git
+aseprite/aseprite,17024,https://github.com/aseprite/aseprite,https://github.com/aseprite/aseprite.git
+ValveSoftware/Proton,16823,https://github.com/ValveSoftware/Proton,https://github.com/ValveSoftware/Proton.git
+microsoft/winget-cli,16680,https://github.com/microsoft/winget-cli,https://github.com/microsoft/winget-cli.git
+facebookresearch/faiss,16663,https://github.com/facebookresearch/faiss,https://github.com/facebookresearch/faiss.git
+sqlitebrowser/sqlitebrowser,16304,https://github.com/sqlitebrowser/sqlitebrowser,https://github.com/sqlitebrowser/sqlitebrowser.git
+Tencent/mars,16090,https://github.com/Tencent/mars,https://github.com/Tencent/mars.git
+electronicarts/CnC_Remastered_Collection,16039,https://github.com/electronicarts/CnC_Remastered_Collection,https://github.com/electronicarts/CnC_Remastered_Collection.git
+cocos2d/cocos2d-x,16030,https://github.com/cocos2d/cocos2d-x,https://github.com/cocos2d/cocos2d-x.git
+simdjson/simdjson,15446,https://github.com/simdjson/simdjson,https://github.com/simdjson/simdjson.git
+qbittorrent/qBittorrent,15298,https://github.com/qbittorrent/qBittorrent,https://github.com/qbittorrent/qBittorrent.git
+facebook/yoga,15112,https://github.com/facebook/yoga,https://github.com/facebook/yoga.git
+catchorg/Catch2,14757,https://github.com/catchorg/Catch2,https://github.com/catchorg/Catch2.git
+microsoft/react-native-windows,14655,https://github.com/microsoft/react-native-windows,https://github.com/microsoft/react-native-windows.git
+pqrs-org/Karabiner-Elements,14415,https://github.com/pqrs-org/Karabiner-Elements,https://github.com/pqrs-org/Karabiner-Elements.git
+Tencent/ncnn,14241,https://github.com/Tencent/ncnn,https://github.com/Tencent/ncnn.git
+apache/incubator-weex,13960,https://github.com/apache/incubator-weex,https://github.com/apache/incubator-weex.git
+esp8266/Arduino,13936,https://github.com/esp8266/Arduino,https://github.com/esp8266/Arduino.git
+dogecoin/dogecoin,13891,https://github.com/dogecoin/dogecoin,https://github.com/dogecoin/dogecoin.git
+google/filament,13785,https://github.com/google/filament,https://github.com/google/filament.git
+xbmc/xbmc,13651,https://github.com/xbmc/xbmc,https://github.com/xbmc/xbmc.git
+microsoft/LightGBM,13658,https://github.com/microsoft/LightGBM,https://github.com/microsoft/LightGBM.git
+Qv2ray/Qv2ray,13424,https://github.com/Qv2ray/Qv2ray,https://github.com/Qv2ray/Qv2ray.git
+apache/incubator-brpc,13036,https://github.com/apache/incubator-brpc,https://github.com/apache/incubator-brpc.git
+OpenGenus/cosmos,13005,https://github.com/OpenGenus/cosmos,https://github.com/OpenGenus/cosmos.git
+microsoft/AirSim,12940,https://github.com/microsoft/AirSim,https://github.com/microsoft/AirSim.git
+MarlinFirmware/Marlin,12872,https://github.com/MarlinFirmware/Marlin,https://github.com/MarlinFirmware/Marlin.git
+keepassxreboot/keepassxc,12661,https://github.com/keepassxreboot/keepassxc,https://github.com/keepassxreboot/keepassxc.git
+CoatiSoftware/Sourcetrail,12572,https://github.com/CoatiSoftware/Sourcetrail,https://github.com/CoatiSoftware/Sourcetrail.git
+WerWolv/ImHex,12521,https://github.com/WerWolv/ImHex,https://github.com/WerWolv/ImHex.git
+arangodb/arangodb,12212,https://github.com/arangodb/arangodb,https://github.com/arangodb/arangodb.git
+Tencent/rapidjson,11914,https://github.com/Tencent/rapidjson,https://github.com/Tencent/rapidjson.git
+EOSIO/eos,11341,https://github.com/EOSIO/eos,https://github.com/EOSIO/eos.git
+bkaradzic/bgfx,11293,https://github.com/bkaradzic/bgfx,https://github.com/bkaradzic/bgfx.git
+apple/foundationdb,11210,https://github.com/apple/foundationdb,https://github.com/apple/foundationdb.git
+rizinorg/cutter,11173,https://github.com/rizinorg/cutter,https://github.com/rizinorg/cutter.git
+kyleneideck/BackgroundMusic,11226,https://github.com/kyleneideck/BackgroundMusic,https://github.com/kyleneideck/BackgroundMusic.git
+FreeCAD/FreeCAD,11092,https://github.com/FreeCAD/FreeCAD,https://github.com/FreeCAD/FreeCAD.git
+davisking/dlib,11059,https://github.com/davisking/dlib,https://github.com/davisking/dlib.git
+RPCS3/rpcs3,10942,https://github.com/RPCS3/rpcs3,https://github.com/RPCS3/rpcs3.git
+facebook/watchman,10793,https://github.com/facebook/watchman,https://github.com/facebook/watchman.git
+apple/turicreate,10658,https://github.com/apple/turicreate,https://github.com/apple/turicreate.git
+OpenRCT2/OpenRCT2,10381,https://github.com/OpenRCT2/OpenRCT2,https://github.com/OpenRCT2/OpenRCT2.git
+openalpr/openalpr,10391,https://github.com/openalpr/openalpr,https://github.com/openalpr/openalpr.git
+polybar/polybar,10196,https://github.com/polybar/polybar,https://github.com/polybar/polybar.git
+Tencent/matrix,9741,https://github.com/Tencent/matrix,https://github.com/Tencent/matrix.git
+apache/arrow,9343,https://github.com/apache/arrow,https://github.com/apache/arrow.git
+typesense/typesense,9529,https://github.com/typesense/typesense,https://github.com/typesense/typesense.git
+TranslucentTB/TranslucentTB,9268,https://github.com/TranslucentTB/TranslucentTB,https://github.com/TranslucentTB/TranslucentTB.git
+bulletphysics/bullet3,9146,https://github.com/bulletphysics/bullet3,https://github.com/bulletphysics/bullet3.git
+Atmosphere-NX/Atmosphere,9056,https://github.com/Atmosphere-NX/Atmosphere,https://github.com/Atmosphere-NX/Atmosphere.git
+apache/thrift,8998,https://github.com/apache/thrift,https://github.com/apache/thrift.git
+sonic-pi-net/sonic-pi,8986,https://github.com/sonic-pi-net/sonic-pi,https://github.com/sonic-pi-net/sonic-pi.git
+microsoft/napajs,8958,https://github.com/microsoft/napajs,https://github.com/microsoft/napajs.git
+Studio3T/robomongo,8886,https://github.com/Studio3T/robomongo,https://github.com/Studio3T/robomongo.git
+symless/synergy-core,8859,https://github.com/symless/synergy-core,https://github.com/symless/synergy-core.git
+openframeworks/openFrameworks,8818,https://github.com/openframeworks/openFrameworks,https://github.com/openframeworks/openFrameworks.git
+nasa/fprime,8807,https://github.com/nasa/fprime,https://github.com/nasa/fprime.git
+DayBreak-u/chineseocr_lite,8776,https://github.com/DayBreak-u/chineseocr_lite,https://github.com/DayBreak-u/chineseocr_lite.git
+mapeditor/tiled,8664,https://github.com/mapeditor/tiled,https://github.com/mapeditor/tiled.git
+Aircoookie/WLED,8631,https://github.com/Aircoookie/WLED,https://github.com/Aircoookie/WLED.git
+zerotier/ZeroTierOne,8518,https://github.com/zerotier/ZeroTierOne,https://github.com/zerotier/ZeroTierOne.git
+dolphin-emu/dolphin,8358,https://github.com/dolphin-emu/dolphin,https://github.com/dolphin-emu/dolphin.git
+diasurgical/devilution,8295,https://github.com/diasurgical/devilution,https://github.com/diasurgical/devilution.git
+sass/node-sass,8102,https://github.com/sass/node-sass,https://github.com/sass/node-sass.git
+doitsujin/dxvk,7714,https://github.com/doitsujin/dxvk,https://github.com/doitsujin/dxvk.git
+assimp/assimp,7694,https://github.com/assimp/assimp,https://github.com/assimp/assimp.git
+zeromq/libzmq,7684,https://github.com/zeromq/libzmq,https://github.com/zeromq/libzmq.git
+Maximus5/ConEmu,7660,https://github.com/Maximus5/ConEmu,https://github.com/Maximus5/ConEmu.git
+SFML/SFML,7596,https://github.com/SFML/SFML,https://github.com/SFML/SFML.git
+nodegui/nodegui,7587,https://github.com/nodegui/nodegui,https://github.com/nodegui/nodegui.git
+carla-simulator/carla,7581,https://github.com/carla-simulator/carla,https://github.com/carla-simulator/carla.git
+hoffstadt/DearPyGui,7562,https://github.com/hoffstadt/DearPyGui,https://github.com/hoffstadt/DearPyGui.git
+anbox/anbox,7552,https://github.com/anbox/anbox,https://github.com/anbox/anbox.git
+facebook/proxygen,7463,https://github.com/facebook/proxygen,https://github.com/facebook/proxygen.git
+opencv/opencv_contrib,7366,https://github.com/opencv/opencv_contrib,https://github.com/opencv/opencv_contrib.git
+vesoft-inc/nebula,7317,https://github.com/vesoft-inc/nebula,https://github.com/vesoft-inc/nebula.git
+Z3Prover/z3,7295,https://github.com/Z3Prover/z3,https://github.com/Z3Prover/z3.git
+citra-emu/citra,7291,https://github.com/citra-emu/citra,https://github.com/citra-emu/citra.git
+TrinityCore/TrinityCore,7274,https://github.com/TrinityCore/TrinityCore,https://github.com/TrinityCore/TrinityCore.git
+PointCloudLibrary/pcl,7271,https://github.com/PointCloudLibrary/pcl,https://github.com/PointCloudLibrary/pcl.git
+ArduPilot/ardupilot,7193,https://github.com/ArduPilot/ardupilot,https://github.com/ArduPilot/ardupilot.git
+facebook/hermes,7181,https://github.com/facebook/hermes,https://github.com/facebook/hermes.git
+hrydgard/ppsspp,7141,https://github.com/hrydgard/ppsspp,https://github.com/hrydgard/ppsspp.git
+JoeyDeVries/LearnOpenGL,7034,https://github.com/JoeyDeVries/LearnOpenGL,https://github.com/JoeyDeVries/LearnOpenGL.git
+tenacityteam/tenacity,6985,https://github.com/tenacityteam/tenacity,https://github.com/tenacityteam/tenacity.git
+minetest/minetest,6960,https://github.com/minetest/minetest,https://github.com/minetest/minetest.git
+musescore/MuseScore,6924,https://github.com/musescore/MuseScore,https://github.com/musescore/MuseScore.git
+Mooophy/Cpp-Primer,6915,https://github.com/Mooophy/Cpp-Primer,https://github.com/Mooophy/Cpp-Primer.git
+monero-project/monero,6809,https://github.com/monero-project/monero,https://github.com/monero-project/monero.git

@@ -9,5 +9,6 @@ out/understand/*
 repo/*
 records/*
 log-samples/*
+dzf/**
 
 !**/KEEP THIS DIR

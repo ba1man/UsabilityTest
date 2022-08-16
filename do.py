@@ -8,6 +8,7 @@ This script depends on:
     Java >= 15 (through environment path)
 
     pip install psutil // For memory usage monitoring
+    pip install pyuserinput // For automate SourceTrail
 
 This script has only been tested on Windows 10/11.
 '''
@@ -39,7 +40,7 @@ logging.basicConfig(
 
 try:
     import psutil
-except:
+except NameError:
     logging.warning('Can not import psutil, memory usage monitoring disabled')
 
 
@@ -113,10 +114,10 @@ args = parser.parse_args()
 
 lang = args.lang
 try:
-    ['cpp', 'java', 'python'].index(lang)
+    ['cpp', 'java', 'python', 'ts'].index(lang)
 except:
     raise ValueError(
-        f'Invalid lang {lang}, only support cpp / java / python')
+        f'Invalid lang {lang}, only support cpp / java / python / ts')
 
 range = args.range.split('-')
 if len(range) == 1:
@@ -178,10 +179,7 @@ try:
                 project_name = row[0].split("/")[-1]
                 # Some project's git url is in 3rd column, rather than 4th column,
                 # which is weird. (Encoding problem) This handles that situation.
-                if lang == 'cpp':
-                    project_clone_url_list[project_name] = row[4] if row[4] != '' else row[3]
-                else:
-                    project_clone_url_list[project_name] = row[3] if row[3] != '' else row[2]
+                project_clone_url_list[project_name] = row[3] if row[3] != '' else row[2]
             count += 1
 except EnvironmentError:
     logging.error(f'Can not find project list for {args.lang}')
@@ -445,11 +443,11 @@ for project_name in project_clone_url_list.keys():
         records['Understand-memory'] = 0
 
     if only == 'sourcetrail' or only == '':
-        # Run SourceTrail (only if the project has been created manually before)
+        # Run SourceTrail (only if the project has been created before)
         print('Start SourceTrail')
-        spath = f'./out/sourcetrail/{project_name}/{project_name}.srctrlprj'
+        spath = f'./out/sourcetrail/{project_name}.srctrlprj'
         if path.exists(spath):
-            cmd = f'sourcetrail index --project-file {path.join(path.dirname(__file__), spath)}'
+            cmd = f'"C:\Program Files\Sourcetrail\Sourcetrail.exe" index --project-file {path.join(path.dirname(__file__), spath)}'
 
             time_start = time.time()
             proc = subprocess.Popen(
