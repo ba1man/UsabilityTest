@@ -1,7 +1,9 @@
 import time
 from pymouse import PyMouse
 from pykeyboard import PyKeyboard
+import pyperclip
 import csv
+import os
 
 m = PyMouse()
 k = PyKeyboard()
@@ -43,8 +45,16 @@ def create_st_project(projectname,projectlocation,language,FileDirectory):
     
     if language=='cpp':
         m.click(1340, 700)
-    else:
+    elif language == 'java':
         m.click(1344, 567)  # 点击edit小图标
+    elif language == 'python':
+        m.click(946, 381)   # Python executable path
+        # Do not use this, this is too slow and will cause problems
+        # k.type_string('C:\\Users\\ThisRabbit\\AppData\\Local\\Programs\\Python\\Python38\\')
+        pyperclip.copy('C:\\Users\\ThisRabbit\\AppData\\Local\\Programs\\Python\\Python38\\')
+        k.press_keys([k.control_key, 'v'])
+        time.sleep(3)   # Wait for path checking (will change coordinates of latter components)
+        m.click(1344, 567)
     time.sleep(1)  # 等待1秒让机器反应进入第个5界面
     
     m.click(770, 350)  # 点击File & Directories to Index进入第六个界面
@@ -55,10 +65,11 @@ def create_st_project(projectname,projectlocation,language,FileDirectory):
     time.sleep(1)  # 等待1秒让机器反应
     m.click(1344, 796)  # 点击create创建项目
     time.sleep(10)  # 等待10秒让机器反应
-    m.click(882, 631)  # 点击cancel取消分析s
+    m.click(882, 631)  # 点击cancel取消分析
     return
 
-# CreateProject('12306','D:\\ASE2022\\UsabilityTest\\out\\sourcetrail','python','D:\\ASE2022\\UsabilityTest\\repo\\12306')
+from_line = 85
+end_line = 85
 
 for lang in ['python']:
     project_names = []
@@ -67,7 +78,7 @@ for lang in ['python']:
             project_list = csv.reader(file)
             count = 0
             for row in project_list:
-                if count >= 80:
+                if (count >= from_line) and (count <= end_line):
                     project_name = row[0].split("/")[-1]
                     project_names.append(project_name)
                 count += 1
@@ -75,5 +86,15 @@ for lang in ['python']:
         print('Error in reading csv file')
 
     for project_name in project_names:
+        print(f'Creating SourceTrail DB on {project_name}, please get the window ready')
+
+        try:
+            os.remove(f'../out/sourcetrail/{project_name}.srctrlbm')
+            os.remove(f'../out/sourcetrail/{project_name}.srctrldb')
+            os.remove(f'../out/sourcetrail/{project_name}.srctrlprj')
+            print(f'Removed old files for project {project_name}')
+        except:
+            print(f'Cannot find old files for project {project_name}')
+
         create_st_project(project_name, f'D:\\ASE2022\\UsabilityTest\\out\\sourcetrail', lang, f'D:\\ASE2022\\UsabilityTest\\repo\\{project_name}')
         print(f'Created {lang} project {project_name}')

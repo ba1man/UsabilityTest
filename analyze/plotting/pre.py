@@ -2,10 +2,27 @@ import argparse
 import csv
 import numpy as np
 
+
+# Fixtures
 name_for = {'cpp': 'C++',
             'java': 'Java',
-            'python': 'Python'}
+            'python': 'Python',
+            'ts': 'JS/TS',
+            }
 
+tools = {
+    'depends': ['Depends', '#34D90B', '#d0ffcf', 'v', 'solid'],  # Green
+    'enre': ['ENRE', '#006CD9', '#e3edff', '^', 'dotted'],  # Blue
+    'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6', '<', 'dashed'],  # Yellow
+    'understand': ['Understand', '#D916AE', '#FCDCEE', '>', 'dashdot'],  # Purple
+}
+
+# tools = {
+#     'depends': ['Depends', 'green', '#d0ffcf', 'v', 'solid'],  # Green
+#     'enre': ['ENRE', '#0053b3', 'blue', '^', 'dotted'],  # Blue
+#     'sourcetrail': ['SourceTrail', 'yellow', '#FFF2D6', '<', 'dashed'],  # Yellow
+#     'understand': ['Understand', 'red', '#FCDCEE', '>', 'dashdot'],  # Purple
+# }
 
 def init():
     parser = argparse.ArgumentParser()
@@ -30,28 +47,15 @@ def init():
 
     langs = args.lang
     try:
-        ['all', 'cpp', 'java', 'python'].index(langs)
+        ['all', 'cpp', 'java', 'python', 'ts'].index(langs)
     except ValueError:
-        raise ValueError(f'Invalid lang {langs}, only support all / cpp / java / python')
+        raise ValueError(f'Invalid lang {langs}, only support all / cpp / java / python / ts')
     else:
         if langs == 'all':
-            langs = ['cpp', 'java', 'python']
+            langs = ['cpp', 'java', 'python', 'ts']
         else:
             langs = [langs]
 
-    # Fixtures
-    tools = {
-        'depends': ['Depends', '#34D90B', '#d0ffcf'],  # Green
-        'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
-        'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6'],  # Yellow
-        'understand': ['Understand', '#D916AE', '#FCDCEE'],  # Purple
-    }
-    # tools = {
-    #     'depends': ['Depends', '#249908', '#d0ffcf'],  # Green
-    #     'enre': ['ENRE', '#006CD9', '#e3edff'],  # Blue
-    #     'sourcetrail': ['SourceTrail', '#9C6914', '#FFF2D6'],  # Yellow
-    #     'understand': ['Understand', '#990F7B', '#FCDCEE'],  # Purple
-    # }
     metrics = ['time', 'memory']
 
     collection = {}
@@ -69,14 +73,17 @@ def init():
                     for metric in metrics:
                         curr[f'{tool}-{metric}'] = []
 
+                index = -1
                 for row in data:
-                    curr['loc'].append(int(row[0]))
-                    c = 1
-                    for tool in tools:
-                        for metric in metrics:
-                            # Convert MB to GB if it's memory data
-                            curr[f'{tool}-{metric}'].append(float(row[c]) / (1 if c % 2 == 1 else 1024))
-                            c += 1
+                    index += 1
+                    if index != 0:
+                        curr['loc'].append(int(row[1]))
+                        c = 2
+                        for tool in tools:
+                            for metric in metrics:
+                                # Convert MB to GB if it's memory data
+                                curr[f'{tool}-{metric}'].append(float(row[c]) / (1 if c % 2 == 0 else 1024))
+                                c += 1
         except EnvironmentError:
             print(f'No {lang}.csv file found, skipping to the next')
             continue

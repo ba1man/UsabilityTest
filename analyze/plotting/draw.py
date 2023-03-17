@@ -37,13 +37,15 @@ def filter_time(lang, loc, subject, tool=None):
             else:
                 if value < loc[index] * 100 / (5 * 10 ** 6) - 20:
                     indices.append(index)
-        else:
+        elif lang == 'python':
             if tool == 'sourcetrail':
                 if value < 100 / (2 * 10 ** 5) * loc[index]:
                     indices.append(index)
             else:
                 if value < 50 / (10**6-5*10**4) * (loc[index]-5*10*4):
                     indices.append(index)
+        else:
+            pass
     return np.delete(loc, indices), np.delete(subject, indices)
 
 
@@ -70,10 +72,12 @@ def filter_memory(lang, loc, subject, tool=None):
                     indices.append(index)
         elif lang == 'cpp':
             pass
-        else:
+        elif lang == 'python':
             if tool == 'enre':
                 if value < 0.5 / (2 * 10 ** 5) * loc[index]:
                     indices.append(index)
+        else:
+            pass
     return np.delete(loc, indices), np.delete(subject, indices), np.linspace(range[0], range[1], 1000)
 
 
@@ -93,7 +97,7 @@ def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
     plt.figure(num=f'{lang}-{metric}')
     plt.xlabel('LoC')
 
-    if lang == 'java' or lang == 'cpp':
+    if lang == 'java' or lang == 'cpp' or lang == 'ts':
         plt.xlim([0, 2.25*10**6])
     else:
         plt.xlim([0, 1.1*10**6])
@@ -107,61 +111,65 @@ def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
 
     plt.gca().xaxis.set_major_formatter(xlabel_formatter)
 
+    general_lw = 0.8
+    general_s = 36
+    general_m = '+'
+
     # ENRE
-    e = plt.scatter(loc, enre, linewidths=0.8, c='b')
+    e = plt.scatter(loc, enre, linewidths=general_lw, s=general_s, marker=general_m, c=tools['enre'][1])
     if metric == 'time':
         _loc, _enre = filter_time(lang, loc, enre, 'enre')
         res = sm.OLS(_enre, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx, c='b')
+        plt.plot(trendx, res.params[0] * trendx, c=tools['enre'][1])
         print(f'Standard consumption on time for ENRE in {lang} is {res.params[0] * 10**6}s')
         print(f'R-squared value for ENRE in {lang}-{metric} is {res.rsquared}')
     else:
         _loc, _enre, _range = filter_memory(lang, loc, enre, 'enre')
         popt, pcov = curve_fit(power_func, _loc, _enre)
-        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c='b')
+        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c=tools['enre'][1])
 
     # Depends
-    d = plt.scatter(loc, depends, linewidths=0.8, c='g')
-    if metric == 'time':
-        _loc, _depends = filter_time(lang, loc, depends, 'depends')
-        res = sm.OLS(_depends, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx, c='g')
-        print(f'Standard consumption on time for Depends in {lang} is {res.params[0] * 10 ** 6}s')
-        print(f'R-squared value for Depends in {lang}-{metric} is {res.rsquared}')
-    else:
-        _loc, _depends, _range = filter_memory(lang, loc, depends, 'depends')
-        popt, pcov = curve_fit(power_func, _loc, _depends)
-        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c='g')
+    # d = plt.scatter(loc, depends, linewidths=general_lw, s=general_s, marker=general_m, c=tools['depends'][1])
+    # if metric == 'time':
+    #     _loc, _depends = filter_time(lang, loc, depends, 'depends')
+    #     res = sm.OLS(_depends, _loc).fit()
+    #     plt.plot(trendx, res.params[0] * trendx, c=tools['depends'][1])
+    #     print(f'Standard consumption on time for Depends in {lang} is {res.params[0] * 10 ** 6}s')
+    #     print(f'R-squared value for Depends in {lang}-{metric} is {res.rsquared}')
+    # else:
+    #     _loc, _depends, _range = filter_memory(lang, loc, depends, 'depends')
+    #     popt, pcov = curve_fit(power_func, _loc, _depends)
+    #     plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c=tools['depends'][1])
 
     # SourceTrail
-    s = plt.scatter(loc, sourcetrail, linewidths=0.8, c='#888888')
-    if metric == 'time':
-        _loc, _sourcetrail = filter_time(lang, loc, sourcetrail, 'sourcetrail')
-        res = sm.OLS(_sourcetrail, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx, c='#888888')
-        print(f'Standard consumption on time for SourceTrail in {lang} is {res.params[0] * 10 ** 6}s')
-        print(f'R-squared value for SourceTrail in {lang}-{metric} is {res.rsquared}')
-    else:
-        _loc, _sourcetrail, _range = filter_memory(lang, loc, sourcetrail, 'sourcetrail')
-        popt, pcov = curve_fit(power_func, _loc, _sourcetrail)
-        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c='#888888')
+    # s = plt.scatter(loc, sourcetrail, linewidths=general_lw, s=general_s, marker=general_m, c=tools['sourcetrail'][1])
+    # if metric == 'time':
+    #     _loc, _sourcetrail = filter_time(lang, loc, sourcetrail, 'sourcetrail')
+    #     res = sm.OLS(_sourcetrail, _loc).fit()
+    #     plt.plot(trendx, res.params[0] * trendx, c=tools['sourcetrail'][1])
+    #     print(f'Standard consumption on time for SourceTrail in {lang} is {res.params[0] * 10 ** 6}s')
+    #     print(f'R-squared value for SourceTrail in {lang}-{metric} is {res.rsquared}')
+    # else:
+    #     _loc, _sourcetrail, _range = filter_memory(lang, loc, sourcetrail, 'sourcetrail')
+    #     popt, pcov = curve_fit(power_func, _loc, _sourcetrail, maxfev=5000)
+    #     plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c=tools['sourcetrail'][1])
 
     # Understand
-    u = plt.scatter(loc, understand, linewidths=0.8, c='r')
+    u = plt.scatter(loc, understand, linewidths=general_lw, s=general_s, marker=general_m, c=tools['understand'][1])
     if metric == 'time':
         _loc, _understand = filter_time(lang, loc, understand, 'understand')
         res = sm.OLS(_understand, _loc).fit()
-        plt.plot(trendx, res.params[0] * trendx, c='r')
+        plt.plot(trendx, res.params[0] * trendx, c=tools['understand'][1])
         print(f'Standard consumption on time for Understand in {lang} is {res.params[0] * 10 ** 6}s')
         print(f'R-squared value for Understand in {lang}-{metric} is {res.rsquared}')
     else:
         _loc, _understand, _range = filter_memory(lang, loc, understand, 'understand')
         popt, pcov = curve_fit(power_func, _loc, _understand)
-        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c='r')
+        plt.plot(_range, popt[0] * _range ** popt[1] + popt[2], c=tools['understand'][1])
 
-    if mode == 'view':
-        plt.title(f'{lang}-{metric}')
-    plt.legend(handles=[e, d, s, u], labels=['ENRE', 'Depends', 'SourceTrail', 'Understand'], loc='upper right')
+    # if mode == 'view':
+    #     plt.title(f'{lang}-{metric}')
+    plt.legend(handles=[e, u], labels=['ENRE', 'Depends', 'SourceTrail', 'Understand'], loc='upper right')
     plt.tight_layout()
     if mode == 'view':
         plt.show()
@@ -171,7 +179,7 @@ def draw(lang, metric, loc, enre, depends, sourcetrail, understand):
 
 for lang in langs:
     curr = collection[lang]
-    for metric in ['memory']:
+    for metric in ['time', 'memory']:
         draw(
             lang,
             metric,

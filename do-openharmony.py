@@ -17,6 +17,7 @@ import re
 import io
 import logging
 from os import path, rename
+import os
 import sys
 import csv
 import subprocess
@@ -114,10 +115,10 @@ args = parser.parse_args()
 
 lang = args.lang
 try:
-    ['c', 'cpp', 'java', 'python', 'ts'].index(lang)
+    ['cpp', 'java', 'python', 'ts'].index(lang)
 except:
     raise ValueError(
-        f'Invalid lang {lang}, only support c / cpp / java / python / ts')
+        f'Invalid lang {lang}, only support cpp / java / python / ts')
 
 range = args.range.split('-')
 if len(range) == 1:
@@ -187,7 +188,7 @@ except EnvironmentError:
 
 # Cloning (or reusing) repository from GitHub
 for project_name in project_clone_url_list.keys():
-    repo_path = f'./repo/{project_name}'
+    repo_path = f'./repo/openharmony/{project_name}'
     abs_repo_path = path.join(path.dirname(__file__), repo_path)
     if not path.exists(repo_path):
         logging.info(f'Cloning \'{project_name}\'')
@@ -221,8 +222,6 @@ for project_name in project_clone_url_list.keys():
     else:
         logging.info(
             f'Reusing existed local repository for {project_name}')
-    
-    
 
     records = dict()
 
@@ -258,12 +257,6 @@ for project_name in project_clone_url_list.keys():
                             LoC += int(out[-1])
                         except:
                             pass
-                    elif lang == 'c':
-                        try:
-                            ['C++', 'C/C++ Header'].index(out[1])
-                            LoC += int(out[-1])
-                        except:
-                            pass
                     elif lang == 'python':
                         if out[1] == 'Python':
                             LoC += int(out[-1])
@@ -285,8 +278,6 @@ for project_name in project_clone_url_list.keys():
             cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-java.jar")} java {abs_repo_path} {project_name}'
         elif args.lang == 'cpp':
             cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} {abs_repo_path} {project_name}'
-        elif args.lang == 'c':
-            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} {abs_repo_path} {project_name}'
         elif args.lang == 'python':
             cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {abs_repo_path}'
         else:
@@ -296,6 +287,10 @@ for project_name in project_clone_url_list.keys():
         # Whether placing the start of timer here or after the creation
         # has no significant impact on the final duration
         time_start = time.time()
+        isOutputExist = os.path.exists(f'./out/enre-openharmony/{project_name}')
+        if not isOutputExist:
+            os.makedirs(f'./out/enre-openharmony/{project_name}')
+            
         proc = subprocess.Popen(
             cmd,
             # Do not use `shell=True`, which will create shell->jvm, a sub-subprocess, which
@@ -305,7 +300,8 @@ for project_name in project_clone_url_list.keys():
             # shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            cwd=f'./out/enre-{lang}')
+            cwd=f'./out/enre-openharmony/{project_name}')
+            # cwd=f'./out/enre-{lang}')
 
         killed = False
         if timeout is not None:
@@ -353,10 +349,7 @@ for project_name in project_clone_url_list.keys():
     if only == 'depends' or only == '':
         # Run Depends
         print('starting Depends')
-        if lang == 'c':
-            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} cpp {abs_repo_path} {project_name} -g var'
-        else:
-            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name} -g var'
+        cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/depends.jar")} {lang} {abs_repo_path} {project_name} -g var'
 
         time_start = time.time()
         proc = subprocess.Popen(
@@ -407,10 +400,8 @@ for project_name in project_clone_url_list.keys():
     if only == 'understand' or only == '':
         # Run Understand
         print('Starting Understand')
-        upath = f'./out/understand/{project_name}.und'
+        upath = f'./out/understand-openharmony/{project_name}.und'
         if lang == 'cpp':
-            ulang = 'C++'
-        elif lang == 'c':
             ulang = 'C++'
         elif lang == 'java':
             ulang = 'Java'
@@ -418,7 +409,7 @@ for project_name in project_clone_url_list.keys():
             ulang = 'Python'
         else:
             ulang = 'Web'
-        cmd = f'und create -db {upath} -languages {ulang} add {abs_repo_path} analyze -all'
+        cmd = f'und create -db {upath} -languages {ulang} add {abs_repo_path} settings -C++UseStrict on analyze -all'
 
         time_start = time.time()
         proc = subprocess.Popen(
