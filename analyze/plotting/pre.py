@@ -72,24 +72,30 @@ def init():
                 for tool in tools:
                     for metric in metrics:
                         curr[f'{tool}-{metric}'] = []
+                curr['stars'] = []
 
                 index = -1
                 for row in data:
                     index += 1
                     if index != 0:
-                        curr['loc'].append(int(row[1]))
+                        loc_num = int(row[1])
+                        if loc_num == 0:
+                            curr['loc'].append(0)
+                        else:
+                            curr['loc'].append(np.log10(loc_num))
                         c = 2
                         for tool in tools:
                             for metric in metrics:
                                 # Convert MB to GB if it's memory data
                                 curr[f'{tool}-{metric}'].append(float(row[c]) / (1 if c % 2 == 0 else 1024))
                                 c += 1
+                        curr['stars'].append(int(row[10]))
         except EnvironmentError:
             print(f'No {lang}.csv file found, skipping to the next')
             continue
         # Convert to numpy array
         for key in curr:
-            if key != 'loc':
+            if key != 'loc' and key != 'stars':
                 curr[key] = np.array(curr[key])
                 # Convert 0, -1 or any error indicators to NaN
                 curr[key][curr[key] <= 0] = np.nan
