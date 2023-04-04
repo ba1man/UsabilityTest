@@ -62,3 +62,10 @@ We want all newly generated files under these directories:
 
 * `logs/`
 * `time-records/`
+
+## To make the fucking Sourcetrail run, i deleted following environment variables:
+
+PYTHONHOME C:\Users\ThisRabbit\miniforge3
+PYTHONPATH C:\Users\ThisRabbit\miniforge3
+PATH C:\Users\ThisRabbit\miniforge3 C:\Users\ThisRabbit\miniforge3\Scripts
+

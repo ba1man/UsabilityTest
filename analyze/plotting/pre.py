@@ -24,7 +24,7 @@ tools = {
 #     'understand': ['Understand', 'red', '#FCDCEE', '>', 'dashdot'],  # Purple
 # }
 
-def init():
+def init(logloc=False):
     parser = argparse.ArgumentParser()
     parser.add_argument('mode', help='Specify the deploy mode')
     parser.add_argument('lang',
@@ -79,10 +79,14 @@ def init():
                     index += 1
                     if index != 0:
                         loc_num = int(row[1])
-                        if loc_num == 0:
-                            curr['loc'].append(0)
+                        if logloc:
+                            if loc_num == 0:
+                                curr['loc'].append(0)
+                            else:
+                                curr['loc'].append(np.log10(loc_num))
                         else:
-                            curr['loc'].append(np.log10(loc_num))
+                            curr['loc'].append(loc_num)
+
                         c = 2
                         for tool in tools:
                             for metric in metrics:
