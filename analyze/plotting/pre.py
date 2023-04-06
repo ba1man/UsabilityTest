@@ -13,7 +13,7 @@ name_for = {'cpp': 'C++',
 tools = {
     'depends': ['Depends', '#34D90B', '#d0ffcf', 'v', 'solid'],  # Green
     'enre': ['ENRE', '#006CD9', '#e3edff', '^', 'dotted'],  # Blue
-    'sourcetrail': ['SourceTrail', '#DB941D', '#FFF2D6', '<', 'dashed'],  # Yellow
+    'sourcetrail': ['Sourcetrail', '#DB941D', '#FFF2D6', '<', 'dashed'],  # Yellow
     'understand': ['Understand', '#D916AE', '#FCDCEE', '>', 'dashdot'],  # Purple
 }
 
