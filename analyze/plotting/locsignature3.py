@@ -108,7 +108,7 @@ plt.text(
 plt.text(
         0.51,
         star_grouping['cpp-qmin']-0.25,
-        '7k',
+        '10k',
         size=9,
         color='#2F2F2F',
         zorder=9999,
@@ -116,7 +116,7 @@ plt.text(
 plt.text(
         0.73,
         star_grouping['cpp-qmin']-0.25,
-        '400k',
+        '350k',
         size=9,
         color='#2F2F2F',
         zorder=9999,
