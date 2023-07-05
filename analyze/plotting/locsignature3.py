@@ -99,25 +99,26 @@ for index, lang in enumerate(langs):
 
 plt.text(
         0.51,
-        star_grouping['cpp-qmin']-0.45,
+        star_grouping['cpp-qmin']-0.58,
         'Star',
-        size=9,
+        size=16,
         color='#2F2F2F',
         zorder=9999,
     )
 plt.text(
-        0.51,
-        star_grouping['cpp-qmin']-0.25,
+        0.505,
+        star_grouping['cpp-qmin']-0.29,
         '10k',
-        size=9,
+        size=12,
         color='#2F2F2F',
         zorder=9999,
     )
 plt.text(
-        0.73,
-        star_grouping['cpp-qmin']-0.25,
+        0.862,
+        star_grouping['cpp-qmin']-0.29,
         '350k',
-        size=9,
+        size=12,
+        ha='right',
         color='#2F2F2F',
         zorder=9999,
     )

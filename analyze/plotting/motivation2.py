@@ -1,5 +1,4 @@
 import csv
-from math import trunc
 
 from pre import name_for, tools
 import matplotlib.pyplot as plt
@@ -67,12 +66,21 @@ for ax in axs.flat:
 
 medians = {}
 total = len(langs) * len(algorithms)
+legends = []
+this_all = []
+this_lang = {'cpp': [], 'java': [], 'python': []}
 for ia, algorithm in enumerate(algorithms):
     plt.plot([], c=algorithms[algorithm][0], label=algorithms[algorithm][1])
     for il, lang in enumerate(langs):
         label = f'{lang}-{algorithm}'
         # Print avg value for (lang, algorithm) pair regardless of analyzers
-        print(label, sum(data[label][0])/len(data[label][0]))
+        this_label = []
+        for i in range(6):
+            this_all += data[label][i]
+            this_lang[lang] += data[label][i]
+            this_label += data[label][i]
+        print(label, 'avg', np.average(this_label))
+        print(label, 'median', np.median(this_label))
         boxplot = axs[il].boxplot(
             data[label],
             widths=0.2,
@@ -84,16 +92,18 @@ for ia, algorithm in enumerate(algorithms):
                 'markerfacecolor': 'none',
                 'markeredgecolor': algorithms[algorithm][0]}
         )
+        if il == 0:
+            legends.append(boxplot['boxes'][0])
         # Print medians
         medians[label] = list(map(lambda p: p.get_ydata()[0], boxplot['medians']))
 
         for it in range(6):
             median = medians[label][it]
             axs[il].text(
-                it - 0.4 * (-1) ** ia,
-                median + 1.22,
+                it - 0.41 * (-1) ** ia,
+                median + 1.26,
                 int(median),
-                size=10,
+                size=12,
                 weight='bold',
                 ha='center',
                 va='top',
@@ -104,16 +114,21 @@ for ia, algorithm in enumerate(algorithms):
 
         axs[il].set_xticks(range(0, len(ticks)), ticks)
 
+for lang in langs:
+    print(lang, 'avg', np.average(this_lang[lang]))
+    print(lang, 'median', np.median(this_lang[lang]))
+print('all', 'avg', np.average(this_all))
+print('all', 'median', np.median(this_all))
 print(medians)
 
-plt.legend(loc='lower right', prop={'size': 10})
+plt.legend(legends, ['LIMBO', 'WCA'], loc='lower right', prop={'size': 12})
 
 fig.tight_layout()
 
 plt.subplots_adjust(left=0.025, right=0.999, top=0.999, bottom=0.08)
 
 # Set mode here
-mode = 'save'
+mode = 'view'
 
 if mode == 'view':
     fig.show()

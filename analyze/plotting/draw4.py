@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from shapely.geometry import LineString, Point
+from matplotlib.lines import Line2D
 
 from pre import init
 
@@ -39,6 +40,7 @@ for il, lang in enumerate(langs):
             continue
         data[key] = np.delete(original_data[key], list(indices))
 
+
     def draw_tool(loc, time, memory, color, marker):
         def size_mapping():
             maximum = max(loc)
@@ -46,7 +48,7 @@ for il, lang in enumerate(langs):
             return list(map(lambda i: i / maximum * 96 + 4, loc))
 
         s = size_mapping()
-        legend = axs[il].scatter(
+        axs[il].scatter(
             time,
             memory,
             marker=marker,
@@ -56,7 +58,13 @@ for il, lang in enumerate(langs):
             edgecolors=color,
             alpha=1,
         )
-        return legend
+        return Line2D([0], [0],
+                      color='w',
+                      marker=marker,
+                      markerfacecolor=color,
+                      markersize=12,
+                      )
+
 
     def draw_trend(tool, _loc, _time, _memory, color, bgcolor, marker, linestyle):
         if lang != 'python':
@@ -140,36 +148,36 @@ for il, lang in enumerate(langs):
 
         # White background cover
         axs[il].plot(x,
-                y,
-                color='w',
-                linewidth=8,
-                alpha=0.8,
-                zorder=24)
+                     y,
+                     color='w',
+                     linewidth=8,
+                     alpha=0.8,
+                     zorder=24)
         axs[il].plot(x,
-                y,
-                color='w',
-                linewidth=12,
-                alpha=0.6,
-                zorder=25)
+                     y,
+                     color='w',
+                     linewidth=12,
+                     alpha=0.6,
+                     zorder=25)
         # Colored lines
         trendline, = axs[il].plot(x,
-                             y,
-                             color=color,
-                             linestyle=linestyle,
-                             linewidth=2,
-                             zorder=50)
+                                  y,
+                                  color=color,
+                                  linestyle=linestyle,
+                                  linewidth=2,
+                                  zorder=50)
 
         # Draw milestone
         mx = loc2x(milestone)
         my = trend(mx)
         axs[il].plot(mx,
-                 my,
-                 'o',
-                 ms=9,
-                 mew=2,
-                 c='w',
-                 markeredgecolor=color,
-                 zorder=99)
+                     my,
+                     'o',
+                     ms=9,
+                     mew=2,
+                     c='w',
+                     markeredgecolor=color,
+                     zorder=99)
         print(f'{lang}-{tool}-1mloc: {round(mx, 1)}, {round(my, 1)}')
 
         # Calculate R2
@@ -180,6 +188,7 @@ for il, lang in enumerate(langs):
         print(f'{lang}-{tool}-r2: {round(r_squared, 1)}')
 
         return trendline, (r_squared, mx, my)
+
 
     rank_data = []
     mTools = tools if lang != 'ts' else {'enre': tools['enre'], 'understand': tools['understand']}
@@ -209,19 +218,19 @@ for il, lang in enumerate(langs):
                       fixture[3])
 
         t, stat = draw_trend(tool,
-                       loc,
-                       time,
-                       memory,
-                       Color(fixture[1]).rgb,
-                       Color(fixture[2]).rgb,
-                       fixture[3],
-                       fixture[4])
+                             loc,
+                             time,
+                             memory,
+                             Color(fixture[1]).rgb,
+                             Color(fixture[2]).rgb,
+                             fixture[3],
+                             fixture[4])
         axs[il].text(
-            1285, 9.8 - 0.4 * it,
+            1282, 9.8 - 0.4 * it,
             f'{"($R^2$ value of) " if it == 0 else ""}{fixture[0]}: {"{:.2f}".format(stat[0])}',
             size=10,
             ha='right',
-            color='#666666',
+            color='#404040',
             zorder=9999,
         )
         if not (il == 2 and it == 2):
@@ -235,25 +244,27 @@ for il, lang in enumerate(langs):
         if il == 0:
             legends.append((l, t))
 
+    xoffset, yoffset = 0, 0
+
     for ia, a in enumerate(['x', 'y']):
         rank_data.sort(key=lambda item: item[a], reverse=True)
         for ir, d in enumerate(rank_data):
-            axs[il].plot(d[a] if ia == 0 else 0,
-                         d[a] if ia == 1 else 0,
+            axs[il].plot(d[a] if ia == 0 else xoffset,
+                         d[a] if ia == 1 else yoffset,
                          'o',
-                         ms=9,
+                         ms=12,
                          mew=0.8,
                          c=d['c'],
                          markeredgecolor='white',
                          clip_on=False,
-                         zorder=111+ir*10)
-            axs[il].plot(d[a] if ia == 0 else 0,
-                         d[a] if ia == 1 else 0,
+                         zorder=111 + ir * 10)
+            axs[il].plot(d[a] if ia == 0 else xoffset,
+                         d[a] if ia == 1 else yoffset,
                          d['m'],
-                         ms=5,
+                         ms=6,
                          c='white',
                          clip_on=False,
-                         zorder=112+ir*10)
+                         zorder=112 + ir * 10)
 
 legends.append(plt.Line2D(
     (0, 0),
@@ -266,9 +277,9 @@ legends.append(plt.Line2D(
 ))
 
 plt.legend(handles=legends,
-          labels=list(map(lambda t: tools[t][0], tools)) + ['1MLoC'],
-          prop={'size': 12},
-          loc='lower right')
+           labels=list(map(lambda t: tools[t][0], tools)) + ['1MLoC'],
+           prop={'size': 12},
+           loc='lower right')
 
 fig.tight_layout()
 
