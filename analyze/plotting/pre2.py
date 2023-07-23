@@ -7,14 +7,14 @@ import numpy as np
 name_for = {'python': 'Python'}
 
 tools = {
-    'depends': ['Depends', '#34D90B', '#d0ffcf', 'v', 'solid'],  # Green
-    'enre': ['ENRE', '#006CD9', '#e3edff', '^', 'dotted'],  # Blue
-    'sourcetrail': ['Sourcetrail', '#DB941D', '#FFF2D6', '<', 'dashed'],  # Yellow
-    'understand': ['Understand', '#D916AE', '#FCDCEE', '>', 'dashdot'],  # Purple
-    'pysonar2': ['PySonar2', '#000000', '#000000', 'o', 'solid'],
-    'enre-old': ['ENRE(Old)', '#00ffff', '#000000', 's', 'solid'],
-    'enre-cfg': ['ENRE(Sum)', '#ffff00', '#000000', 'P', 'solid'],
-    'pycg': ['PyCG', '', '', '', ''],
+    'depends': ['Depends'],
+    'enre': ['ENRE'],
+    'sourcetrail': ['Sourcetrail'],
+    'understand': ['Understand'],
+    'pysonar2': ['PySonar2'],
+    'enre-old': ['ENRE(Old)'],
+    'enre-cfg': ['ENRE(Sum)'],
+    'pycg': ['PyCG'],
 }
 
 
