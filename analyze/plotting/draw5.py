@@ -28,10 +28,10 @@ HEIGHT = 1
 BOX_WIDTH = 0.6
 LIGHT_GRAY = '#f0f0f0'
 DARKER_GRAY = '#9f9f9f'
-GRADIENT_BASE = '#66b3ff'
-HEAT_RESOLUTION = 5
-HEAT_COLOR_DOWN = -0.4  # Smaller is brighter (if apply to luminance)
-HEAT_COLOR_KEY = 'hue'
+GRADIENT_BASE = '#80bfff'
+HEAT_RESOLUTION = 400
+HEAT_COLOR_DOWN = [-0.4, 0.4]  # Smaller is brighter (if apply to luminance)
+HEAT_COLOR_KEY = ['hue', 'luminance']
 LOC_LABEL_FONT_SIZE = 12
 
 plt.style.use('./my.mplstyle')
@@ -44,23 +44,24 @@ axs = []
 for i, _ in enumerate(features):
     subs[i].subplots(1, 3, width_ratios=[30, 1, 30])
     subs[i].subplots_adjust(wspace=0.12)
-    subs[i].suptitle(features[i]['text'])
+    subs[i].suptitle(features[i]['text'], weight='bold')
     axs.append([subs[i].axes[0], subs[i].axes[2], subs[i].axes[1]])
 
     heat_indicator = subs[i].axes[1]
-    heat_indicator.set_xticks([0.5], ['LoC'], fontdict={'fontsize': LOC_LABEL_FONT_SIZE})
+    heat_indicator.set_xticks([0.5], ['kLoC'], fontdict={'fontsize': LOC_LABEL_FONT_SIZE})
     for i in range(HEAT_RESOLUTION):
         color = Color(GRADIENT_BASE)
-        getattr(color, f'set_{HEAT_COLOR_KEY}')(
-            getattr(color, f'get_{HEAT_COLOR_KEY}')() - HEAT_COLOR_DOWN * i / HEAT_RESOLUTION)
+        for ih, _ in enumerate(HEAT_COLOR_KEY):
+            getattr(color, f'set_{HEAT_COLOR_KEY[ih]}')(
+                getattr(color, f'get_{HEAT_COLOR_KEY[ih]}')() - HEAT_COLOR_DOWN[ih] * i / HEAT_RESOLUTION)
         heat_indicator.add_patch(pch.Rectangle(
             (0, i / HEAT_RESOLUTION),
             1, 1 / HEAT_RESOLUTION,
             facecolor=color.web,
         ))
         heat_indicator.set_ylim(0, 1)
-        heat_indicator.set_yticks([0, 0.5, 1], labels=[0, '5k', '10k'], fontdict={'fontsize': LOC_LABEL_FONT_SIZE})
-        heat_indicator.twinx().set_yticks([0, 0.5, 1], labels=['10k', '325k', '750k'],
+        heat_indicator.set_yticks([0, 0.5, 1], labels=[0, '5', '10'], fontdict={'fontsize': LOC_LABEL_FONT_SIZE})
+        heat_indicator.twinx().set_yticks([0, 0.5, 1], labels=['10', '325', '750'],
                                           fontdict={'fontsize': LOC_LABEL_FONT_SIZE})
 
 # Common data
@@ -154,9 +155,10 @@ for inf, feature in enumerate(features):
                     avg_loc = sum([item['loc'] for item in items_in_range]) / len(items_in_range)
 
                     color = Color(GRADIENT_BASE)
-                    getattr(color, f'set_{HEAT_COLOR_KEY}')(
-                        getattr(color, f'get_{HEAT_COLOR_KEY}')() - HEAT_COLOR_DOWN * (avg_loc - heat_min) / heat_max[
-                            slice])
+                    for ih, _ in enumerate(HEAT_COLOR_KEY):
+                        getattr(color, f'set_{HEAT_COLOR_KEY[ih]}')(
+                            getattr(color, f'get_{HEAT_COLOR_KEY[ih]}')() - HEAT_COLOR_DOWN[ih] * (avg_loc - heat_min) / heat_max[
+                                slice])
                     ax.add_patch(pch.Rectangle(
                         (cell_left, it - BOX_WIDTH / 2),
                         cell_width, BOX_WIDTH,
@@ -168,9 +170,10 @@ for inf, feature in enumerate(features):
             cap_right = statistic_values[it * 2 + 1][1]
             for item in filter(lambda item: item['value'] < cap_left or cap_right < item['value'], curr_data):
                 color = Color(GRADIENT_BASE)
-                getattr(color, f'set_{HEAT_COLOR_KEY}')(
-                    getattr(color, f'get_{HEAT_COLOR_KEY}')() - HEAT_COLOR_DOWN * (item['loc'] - heat_min) / heat_max[
-                        slice])
+                for ih, _ in enumerate(HEAT_COLOR_KEY):
+                    getattr(color, f'set_{HEAT_COLOR_KEY[ih]}')(
+                        getattr(color, f'get_{HEAT_COLOR_KEY[ih]}')() - HEAT_COLOR_DOWN[ih] * (item['loc'] - heat_min) / heat_max[
+                            slice])
                 ax.plot(
                     [item['value']], [it],
                     marker='o',
@@ -187,11 +190,13 @@ for inf, feature in enumerate(features):
                     ha='right',
                     zorder=9999,
                     color='white',
+                    weight='bold',
                 )
                 color = Color(GRADIENT_BASE)
-                getattr(color, f'set_{HEAT_COLOR_KEY}')(
-                    getattr(color, f'get_{HEAT_COLOR_KEY}')() - HEAT_COLOR_DOWN * (item['loc'] - heat_min) / heat_max[
-                        slice])
+                for ih, _ in enumerate(HEAT_COLOR_KEY):
+                    getattr(color, f'set_{HEAT_COLOR_KEY[ih]}')(
+                        getattr(color, f'get_{HEAT_COLOR_KEY[ih]}')() - HEAT_COLOR_DOWN[ih] * (item['loc'] - heat_min) / heat_max[
+                            slice])
                 t.set_bbox({
                     'facecolor': color.web,
                     'linewidth': 0,
