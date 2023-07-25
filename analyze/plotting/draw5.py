@@ -238,7 +238,7 @@ for inf, feature in enumerate(features):
                 outers_avg_loc = sum([item['loc'] for item in outers]) / len(outers)
                 t = ax.text(
                     max_right * 99 / 100, it,
-                    f'+{len(outers)}',
+                    f' +{len(outers)} ',
                     size=10,
                     ha='right',
                     va='center',
