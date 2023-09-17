@@ -14,6 +14,7 @@ This script has only been tested on Windows 10/11.
 '''
 
 import re
+import os
 import io
 import logging
 from os import path, rename
@@ -40,7 +41,8 @@ logging.basicConfig(
 
 try:
     import psutil
-except NameError:
+# except NameError:
+except Exception as e:
     logging.warning('Can not import psutil, memory usage monitoring disabled')
 
 
@@ -83,14 +85,14 @@ def memory_profiling(pid):
                 # then we just kill it and let latter projects be run.
                 #
                 # Current threshold is 20GB
-                if value['peak'] > 1024 * 20:
-                    for c in children:
-                        c.kill()
-                    me.kill()
-                    value['peak'] = 0
-                    logging.warning(
-                        f'The process with pid={pid} took too much memory and thus been killed')
-                    break
+                # if value['peak'] > 1024 * 20:
+                #     for c in children:
+                #         c.kill()
+                #     me.kill()
+                #     value['peak'] = 0
+                #     logging.warning(
+                #         f'The process with pid={pid} took too much memory and thus been killed')
+                #     break
 
                 # Set interval to 0.5 for the tradeoff between accuracy and performance
                 # (busy loop will cause the target process to be extremely slow, which
@@ -189,6 +191,7 @@ except EnvironmentError:
 for project_name in project_clone_url_list.keys():
     repo_path = f'./repo/{project_name}'
     abs_repo_path = path.join(path.dirname(__file__), repo_path)
+    abs_repo_path = path.join("..", "..", abs_repo_path)
     if not path.exists(repo_path):
         logging.info(f'Cloning \'{project_name}\'')
         fail_count = 0
@@ -197,6 +200,7 @@ for project_name in project_clone_url_list.keys():
         while not path.exists(repo_path):
             # Depth 1 for only current revison
             cmd = f'git clone --depth 1 {project_clone_url_list[project_name]} {repo_path}'
+            cmd = cmd.split(" ")
 
             proc = subprocess.Popen(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -230,7 +234,8 @@ for project_name in project_clone_url_list.keys():
     if only == 'loc' or only == '':
         print('Counting line of code')
         LoC = 0
-        cmd = f'.\\utils\\cloc-1.92.exe {repo_path} --csv --quiet'
+        cmd = f'./utils/cloc {repo_path} --csv --quiet'
+        cmd = cmd.split(" ")
         try:
             # A fixed timeout threshold is only activated on process all,
             # which allow LoC counting to exeed the time when only process LoC
@@ -260,7 +265,7 @@ for project_name in project_clone_url_list.keys():
                             pass
                     elif lang == 'c':
                         try:
-                            ['C++', 'C/C++ Header'].index(out[1])
+                            ['C++', 'C/C++ Header', 'C'].index(out[1])
                             LoC += int(out[-1])
                         except:
                             pass
@@ -286,15 +291,19 @@ for project_name in project_clone_url_list.keys():
         elif args.lang == 'cpp':
             cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} {abs_repo_path} {project_name}'
         elif args.lang == 'c':
-            cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/enre/enre-cpp.jar")} {abs_repo_path} {project_name}'
+          # cmd = f'java -jar {path.join(path.dirname(__file__), "./tools/ENRE/ENRE-cpp.jar")} {abs_repo_path} {project_name}'
+            cmd = f'java -jar -Xmx64G {path.join("../..", "./tools/ENRE/ENRE-cpp.jar")} {abs_repo_path} {project_name}'
         elif args.lang == 'python':
             cmd = f'{path.join(path.dirname(__file__), "./tools/enre/enre-python.exe")} {abs_repo_path}'
         else:
             cmd = f'node {path.join(path.dirname(__file__), "./tools/enre/enre-ts.js")} -i {abs_repo_path} -n {project_name}'
         print(cmd)
+        cmd = cmd.split(" ")
 
         # Whether placing the start of timer here or after the creation
         # has no significant impact on the final duration
+        out_dirpath = f"./out/enre-{lang}"
+        os.makedirs(out_dirpath, exist_ok=True)
         time_start = time.time()
         proc = subprocess.Popen(
             cmd,
